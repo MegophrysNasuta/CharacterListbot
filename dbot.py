@@ -32,6 +32,7 @@ async def on_message(message):
             'Is this Romaen??',
             "IT'S HONORS, BABY!! WOOOOO!!!! *\*fires machine gun into air\**",
             "I don't have to listen to this British crap.",
+            "Rejoin the EU, already. What are y'all doing over there?",
         )
         msg.append(random.choice(taunt_the_uk))
     elif (content.startswith('!whois') or

@@ -100,7 +100,7 @@ async def on_message(message):
             arg = 'online'
 
         if arg == 'online':
-            toons = list(itertools.chain.from_iterable(list_toons().values()))
+            toons = list(itertools.chain.from_iterable(list_toons(quick=True).values()))
         else:
             toons = [toon[1] for toon in show_toon_archive()]
 

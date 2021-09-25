@@ -92,6 +92,12 @@ def list_toons(update=False, quick=False):
     return toon_list
 
 
+def show_game_feed():
+    url = '%s.json' % API_URL.replace('characters', 'gamefeed')
+    data = requests.get(url).json()
+    return [row for row in data if row['type'] in ('DEA', 'DUE')]
+
+
 def show_toon_archive():
     with sqlite3.connect('toons.db') as conn:
         setup_db_if_blank(conn)
@@ -135,6 +141,9 @@ if __name__ == '__main__':
             for toon in toon_archive:
                 print(toon[1], end=', ')
             print('%i Achaeans known.' % len(toon_archive))
+        elif arg.lower() == 'gamefeed':
+            for death in show_game_feed():
+                print(death['description'])
         elif arg.lower() == 'namestats':
             try:
                 arg2 = sys.argv[2]

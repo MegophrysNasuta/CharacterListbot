@@ -7,8 +7,8 @@ import sys
 
 import discord
 
-from clist import (CharacterNotFound, list_toons, show_toon_archive,
-                   search_toon_archive, to_num)
+from clist import (CharacterNotFound, list_toons, show_game_feed,
+                   show_toon_archive, search_toon_archive, to_num)
 
 
 client = discord.Client()
@@ -88,6 +88,8 @@ async def on_message(message):
                         x=int(data.pop('xp_rank')),
                     )
                 )
+    elif content.startswith('!death'):
+        msg.extend([death['description'] for death in show_game_feed()])
     elif content.startswith('!who') or content.startswith('!online'):
         toons = list_toons()
         total = 0

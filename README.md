@@ -14,3 +14,11 @@ If it says "Ready!" it should be accepting commands as your bot user!
  - `!honors`/`!whois` <CharacterName>
  - `!who`/`!qw`/`!qwho`/`!online`
  - `!namestats` -- see how over-represented A names are today
+
+## Host it on Heroku
+
+1. Get a Heroku account and set up an app. Install the Heroku CLI tools.
+2. `heroku git:remote -a your_app_name` in this repository's folder.
+3. `heroku config:set ACHAEA_WHOBOT_TOKEN=your_bots_token` (or do this in the Heroku UI under Settings for your app).
+4. `git push heroku main` and it should be running.
+5. I recommend installing the Heroku Scheduler addon and scheduling `python clist.py update` to run every 10 minutes. This keeps things from getting out of date and also keeps your free dyno awake!

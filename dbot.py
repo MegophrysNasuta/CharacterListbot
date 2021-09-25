@@ -110,7 +110,10 @@ async def on_message(message):
             msg.append('%s: %s' % (letter, '#' * namestats[letter]))
 
     if msg:
-        await message.channel.send('```%s```' % '\n'.join(msg))
+        if len(msg) == 1:
+            await message.channel.send(msg[0])
+        else:
+            await message.channel.send('```%s```' % '\n'.join(msg))
 
 
 if __name__ == '__main__':

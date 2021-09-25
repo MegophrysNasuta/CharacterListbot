@@ -26,7 +26,9 @@ async def on_message(message):
 
     msg = []
     content = message.content.lower()
-    if (content.startswith('!whois') or
+    if content.startswith('!honours'):
+        msg.append('TEAM AMERICA, F**K YEAH! (Spell it right, Romaen)')
+    elif (content.startswith('!whois') or
             content.startswith('!honors')):
         try:
             name = content.split(None, 1)[1]

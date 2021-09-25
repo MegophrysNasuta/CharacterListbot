@@ -66,14 +66,14 @@ async def on_message(message):
                 msg.append(
                     ('{name} has killed {d:,d} denizens and '
                      '{a:,d} adventurers.').format(
-                        name=name,
+                        name=name.title(),
                         d=to_num(data.pop('mob_kills')),
                         a=to_num(data.pop('player_kills')),
                     )
                 )
                 msg.append(
                     '{name} is Explorer Rank {e:,d} and XP Rank {x:,d}.'.format(
-                        name=name,
+                        name=name.title(),
                         e=int(data.pop('explorer_rank')),
                         x=int(data.pop('xp_rank')),
                     )

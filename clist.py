@@ -1,6 +1,5 @@
 #! /usr/bin/env python3
 from collections import defaultdict
-import itertools
 import json
 from pprint import pprint
 import sqlite3
@@ -129,7 +128,7 @@ if __name__ == '__main__':
             print(', '.join(toons[city]))
         elif arg.lower() == 'update':
             toons = list_toons(update=True)
-            toon_list = list(itertools.chain.from_iterable(toons.values()))
+            toon_list = list_toons(quick=True)
             print('%i toons updated!' % len(toon_list))
         elif arg.lower() == 'offline':
             toon_archive = show_toon_archive()

@@ -7,11 +7,7 @@ import sqlite3
 import string
 import sys
 
-import discord
 import requests
-
-
-client = discord.Client()
 
 
 API_URL = 'http://api.achaea.com/characters'

@@ -5,8 +5,13 @@ import os
 import string
 import sys
 
-from clist import (CharacterNotFound, client, to_num,
-                   list_toons, show_toon_archive, search_toon_archive)
+import discord
+
+from clist import (CharacterNotFound, list_toons, show_toon_archive,
+                   search_toon_archive, to_num)
+
+
+client = discord.Client()
 
 
 @client.event

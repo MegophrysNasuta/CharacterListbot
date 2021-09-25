@@ -2,6 +2,7 @@
 from collections import defaultdict
 import itertools
 import os
+import random
 import string
 import sys
 
@@ -27,7 +28,13 @@ async def on_message(message):
     msg = []
     content = message.content.lower()
     if content.startswith('!honours'):
-        msg.append('TEAM AMERICA, F**K YEAH! (Spell it right, Romaen)')
+        taunt_the_uk = (
+            'TEAM AMERICA, F**K YEAH! :flag_us::flag_us::flag_us:',
+            'Is this Romaen??',
+            "IT'S HONORS, BABY!! WOOOOO!!!! *\*fires machine gun into air\**",
+            "I don't have to listen to this British crap.",
+        )
+        msg.append(random.choice(taunt_the_uk))
     elif (content.startswith('!whois') or
             content.startswith('!honors')):
         try:

@@ -51,7 +51,7 @@ async def on_message(message):
             try:
                 data = search_toon_archive(name)
             except CharacterNotFound:
-                msg.append('"%s" is not real. You made that up.' % name)
+                msg.append('"%s" is not real. You made that up.' % name.title())
             else:
                 fullname = data.pop('fullname')
                 msg.extend([fullname, '=' * len(fullname)])

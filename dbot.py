@@ -78,8 +78,7 @@ async def on_message(message):
                         x=int(data.pop('xp_rank')),
                     )
                 )
-    elif (content.startswith('!who') or content.startswith('!qw') or
-          content.startswith('!qwho') or content.startswith('!online')):
+    elif content.startswith('!who') or content.startswith('!online'):
         toons = list_toons()
         total = 0
         for city in toons:
@@ -88,6 +87,9 @@ async def on_message(message):
             msg.append('')
             total += len(toons[city])
         msg.append('%i online.' % total)
+    elif content.startswith('!qw'):
+        toons = list_toons(quick=True)
+        msg.extend([', '.join(toons), '', '%i online.' % len(toons)])
     elif content.startswith('!namestats'):
         try:
             arg = content.split()[1]

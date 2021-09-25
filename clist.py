@@ -76,10 +76,12 @@ def get_or_create_toon(db_connection, name):
         return data
 
 
-def list_toons(update=False):
+def list_toons(update=False, quick=False):
     toon_list = {}
     data = requests.get('%s.json' % API_URL).json()
     toons = data['characters']
+    if quick:
+        return [toon['name'] for toon in toons]
 
     with sqlite3.connect('toons.db') as conn:
         setup_db_if_blank(conn)

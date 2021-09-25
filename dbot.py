@@ -37,7 +37,6 @@ async def on_message(message):
 :flag_gb:                    :flag_gb:           :flag_gb: :flag_gb:
 :flag_gb::flag_gb:       :flag_gb:       :flag_gb:          :flag_gb:
 :flag_gb:      :flag_gb: :flag_gb:       :flag_gb:          :flag_gb:
-:flag_gb:                    :flag_gb:       :flag_gb:          :flag_gb:
 :flag_gb:                    :flag_gb:           :flag_gb: :flag_gb:
             """,
         )

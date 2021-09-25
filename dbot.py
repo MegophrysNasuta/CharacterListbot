@@ -34,11 +34,11 @@ async def on_message(message):
             "I don't have to listen to this British crap.",
             "Rejoin the EU, already. What are y'all doing over there?",
             """
-:flag_gb:            :flag_gb:           :flag_gb: :flag_gb:
+:flag_gb:               :flag_gb:           :flag_gb: :flag_gb:
 :flag_gb::flag_gb:      :flag_gb:       :flag_gb:          :flag_gb:
 :flag_gb:      :flag_gb::flag_gb:       :flag_gb:          :flag_gb:
-:flag_gb:            :flag_gb:       :flag_gb:          :flag_gb:
-:flag_gb:            :flag_gb:           :flag_gb: :flag_gb:
+:flag_gb:               :flag_gb:       :flag_gb:          :flag_gb:
+:flag_gb:               :flag_gb:           :flag_gb: :flag_gb:
             """,
         )
         msg.append(random.choice(taunt_the_uk))

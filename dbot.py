@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from collections import defaultdict
-import itertools
 import os
 import random
 import string
@@ -100,7 +99,7 @@ async def on_message(message):
             arg = 'online'
 
         if arg == 'online':
-            toons = list(itertools.chain.from_iterable(list_toons(quick=True).values()))
+            toons = list_toons(quick=True)
         else:
             toons = [toon[1] for toon in show_toon_archive()]
 

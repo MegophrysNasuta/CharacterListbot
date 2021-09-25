@@ -81,7 +81,7 @@ async def on_message(message):
     elif content.startswith('!who') or content.startswith('!online'):
         toons = list_toons()
         total = 0
-        for city in toons:
+        for city in sorted(toons):
             msg.append('%s (%s)' % (city.title(), len(toons[city])))
             msg.append(', '.join(toons[city]))
             msg.append('')

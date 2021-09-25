@@ -31,7 +31,10 @@ async def on_message(message):
         try:
             name = content.split(None, 1)[1]
         except IndexError:
-            msg.append('Honors whom? Who is which?!')
+            if content.startswith('!honors'):
+                msg.append('Honors whom?!')
+            else:
+                msg.append('Who is what, man?!')
         except Exception as e:
             print('Error: ', str(e), file=sys.stderr)
             raise
@@ -39,10 +42,10 @@ async def on_message(message):
             try:
                 data = search_toon_archive(name)
             except CharacterNotFound:
-                pass
+                msg.append('"%s" is not real. You made that up.' % name)
             else:
                 fullname = data.pop('fullname')
-                msg = [fullname, '=' * len(fullname)]
+                msg.extend([fullname, '=' * len(fullname)])
                 msg.append(
                     'Level {level} {cls} in House {house} in {city}.'.format(
                         level=data.pop('level'),
@@ -51,7 +54,6 @@ async def on_message(message):
                         city=data.pop('city').title(),
                     )
                 )
-                name = data.pop('name')
                 msg.append(
                     ('{name} has killed {d:,d} denizens and '
                      '{a:,d} adventurers.').format(

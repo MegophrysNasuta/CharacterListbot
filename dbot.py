@@ -94,6 +94,7 @@ async def on_message(message):
         try:
             _, player, against = content.split()
         except ValueError:
+            against = None
             try:
                 _, player = content.split()
             except ValueError:

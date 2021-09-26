@@ -131,6 +131,7 @@ def show_kdr(player, against=None):
         if against:
             sql += ' AND corpse == ?'
             args.append(against)
+        sql += ' COLLATE NOCASE'
         cursor.execute(sql, args)
         try:
             kills = cursor.fetchall()[0][0]
@@ -142,6 +143,7 @@ def show_kdr(player, against=None):
         if against:
             sql += ' AND killer == ?'
             args.append(against)
+        sql += ' COLLATE NOCASE'
         cursor.execute(sql, args)
         try:
             deaths = cursor.fetchall()[0][0]

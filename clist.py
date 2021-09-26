@@ -58,24 +58,33 @@ def setup_db_if_blank(db_connection):
                                        timestamp datetime DEFAULT CURRENT_TIMESTAMP);
     """
     db_connection.cursor().execute(sql)
+    sql = """
+    CREATE TABLE IF NOT EXISTS updates (id serial PRIMARY_KEY,
+                                        timestamp datetime DEFAULT CURRENT_TIMESTAMP)
+    """
+    db_connection.cursor().execute(sql)
 
 
 def check_for_updates(since):
     with sqlite3.connect('toons.db') as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
-        cursor.execute('SELECT MIN(timestamp) FROM deaths LIMIT 1')
+        cursor.execute('SELECT MAX(timestamp) FROM updates LIMIT 1')
 
+        do_update = False
         try:
             ts = cursor.fetchall()[0][0]
         except IndexError:
-            return True
+            do_update = True
         else:
             if not ts:
-                return True
+                do_update = True
             dt = parse_date(ts)
-            print(dt)
-            return abs(datetime.utcnow() - dt).total_seconds() > int(since)
+            do_update = abs(datetime.utcnow() - dt).total_seconds() > int(since)
+
+        if do_update:
+            cursor.execute('INSERT INTO updates')
+        return do_update
 
 def update_toon(db_connection, name):
     cursor = db_connection.cursor()

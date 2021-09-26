@@ -7,7 +7,7 @@ import sys
 
 import discord
 
-from clist import (CharacterNotFound, list_toons, show_game_feed,
+from clist import (CharacterNotFound, list_toons, show_game_feed, show_kdr,
                    show_toon_archive, search_toon_archive, to_num)
 
 
@@ -90,6 +90,34 @@ async def on_message(message):
                 )
     elif content.startswith('!death'):
         msg.extend([death['description'] for death in show_game_feed()])
+    elif content.startswith('!kdr'):
+        try:
+            _, player, against = content.split()
+        except ValueError:
+            try:
+                _, player = content.split()
+            except ValueError:
+                pass
+        kills, deaths = show_kdr(player, against)
+        if not kills and not deaths:
+            if against:
+                msg.append('No records for %s vs %s.' % (player.title(), against.title()))
+            else:
+                msg.append('No records for %s.' % player.title())
+        else:
+            if deaths:
+                kdr = '%i%%' % ((kills / deaths) * 100)
+            else:
+                kdr = 'infinite'
+
+            if against:
+                rpt_line = '%s has killed %s %i times and died %i times. KDR: %s'
+                rpt_line %= (player.title(), against.title(), kills, deaths, kdr)
+            else:
+                rpt_line = '%s has killed %i times and died %i times. KDR: %s'
+                rpt_line %= (player.title(), kills, deaths, kdr)
+
+            msg.append(rpt_line)
     elif content.startswith('!who') or content.startswith('!online'):
         toons = list_toons()
         total = 0

@@ -122,6 +122,34 @@ def show_death_history():
         return cursor.fetchall()
 
 
+def show_kdr(player, against=None):
+    with sqlite3.connect('toons.db') as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        sql = 'SELECT count(corpse) FROM deaths WHERE killer == ?'
+        args = [player]
+        if against:
+            sql += ' AND corpse == ?'
+            args.append(against)
+        cursor.execute(sql, args)
+        try:
+            kills = cursor.fecthall()[0][0]
+        except IndexError:
+            kills = 0
+
+        sql = 'SELECT count(killer) FROM deaths WHERE corpse == ?'
+        args = [player]
+        if against:
+            sql += ' AND killer == ?'
+            args.append(against)
+        cursor.execute(sql, args)
+        try:
+            deaths = cursor.fetchall()[0][0]
+        except IndexError:
+            deaths = 0
+
+        return kills, deaths
+
 def show_game_feed(types=('DEA', 'DUE')):
     url = '%s.json' % API_URL.replace('characters', 'gamefeed')
     data = requests.get(url).json()

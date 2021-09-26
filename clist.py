@@ -79,8 +79,10 @@ def check_for_updates(since):
         else:
             if not ts:
                 do_update = True
-            dt = parse_date(ts)
-            do_update = abs(datetime.utcnow() - dt).total_seconds() > int(since)
+            else:
+                dt = parse_date(ts)
+                do_update = (abs(datetime.utcnow() - dt).total_seconds() >
+                             int(since))
 
         if do_update:
             cursor.execute('INSERT INTO updates')

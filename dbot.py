@@ -46,6 +46,8 @@ async def on_message(message):
             "https://media.giphy.com/media/deSTGRBAr6TdkVEjCd/giphy.gif?cid=ecf05e478zcb8s57d8lxbjhm3pje0ixh0tmcr1sr2eet35mj&rid=giphy.gif&ct=g",
         )
         msg.append(random.choice(taunt_the_uk))
+    elif content.startswith('!pet cossi'):
+        msg.append('*rubs up against %s\'s leg*' % message.author)
     elif (content.startswith('!whois') or
             content.startswith('!honors')):
         try:

@@ -84,7 +84,10 @@ async def on_message(message):
         except IndexError:
             msg.append('**MATH!!**')
         else:
-            msg.append(eval_expr(expr))
+            try:
+                msg.append(eval_expr(expr))
+            except ZeroDivisionError:
+                msg.append('Ow. What just happened?')
     elif (content.startswith('!whois') or
             content.startswith('!honors')):
         try:

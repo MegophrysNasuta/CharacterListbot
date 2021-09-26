@@ -47,7 +47,7 @@ async def on_message(message):
         )
         msg.append(random.choice(taunt_the_uk))
     elif content.startswith('!pet cossi'):
-        msg.append('*rubs up against %s\'s leg*' % message.author)
+        msg.append('*rubs up against @%s\'s leg*' % message.author)
     elif (content.startswith('!whois') or
             content.startswith('!honors')):
         try:

@@ -14,6 +14,7 @@ If it says "Ready!" it should be accepting commands as your bot user!
  - `!honors`/`!whois` <CharacterName>
  - `!who`/`!qw`/`!qwho`/`!online`
  - `!namestats` -- see how over-represented A names are today
+ - `!math` -- a little arithmetic calculator
 
 ## Host it on Heroku
 

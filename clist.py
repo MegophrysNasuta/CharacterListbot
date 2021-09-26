@@ -171,7 +171,7 @@ def show_kdr(player, against=None):
 
         return kills, deaths
 
-def show_game_feed(types=('DEA', 'DUE'), update=True):
+def show_game_feed(types=('DEA', 'DUE'), update=False):
     url = '%s.json' % API_URL.replace('characters', 'gamefeed')
     data = requests.get(url).json()
     feed = [row for row in data if row['type'] in types]

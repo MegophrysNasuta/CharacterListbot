@@ -153,19 +153,23 @@ async def on_message(message):
             else:
                 msg.append('No records for %s.' % player.title())
         else:
-            if deaths:
+            if kills and not deaths:
+                if against:
+                    rpt_line = '%s is on a perfect %i-kill streak against %s!'
+                    rpt_line %= (player.title(), kills, against.title())
+                else:
+                    rpt_line = '%s is on a perfect %i-kill streak!'
+                    rpt_line %= (player.title(), kills)
+            else:
                 kdr = '%i%%' % ((kills / deaths) * 100)
-            else:
-                kdr = 'infinite'
-
-            if against:
-                if ' ' not in against:
-                    against = against.title()
-                rpt_line = '%s has killed %s %i times and died %i times. KDR: %s'
-                rpt_line %= (player.title(), against, kills, deaths, kdr)
-            else:
-                rpt_line = '%s has killed %i times and died %i times. KDR: %s'
-                rpt_line %= (player.title(), kills, deaths, kdr)
+                if against:
+                    if ' ' not in against:
+                        against = against.title()
+                    rpt_line = '%s has killed %s %i times and died %i times. KDR: %s'
+                    rpt_line %= (player.title(), against, kills, deaths, kdr)
+                else:
+                    rpt_line = '%s has killed %i times and died %i times. KDR: %s'
+                    rpt_line %= (player.title(), kills, deaths, kdr)
 
             msg.append(rpt_line)
     elif content.startswith('!who') or content.startswith('!online'):

@@ -1,11 +1,13 @@
 #! /usr/bin/env python3
 from collections import defaultdict
+from datetime import datetime
 import json
 from pprint import pprint
 import sqlite3
 import string
 import sys
 
+from dateutil.parser import parse as parse_date
 import requests
 
 
@@ -57,6 +59,21 @@ def setup_db_if_blank(db_connection):
     """
     db_connection.cursor().execute(sql)
 
+
+def check_for_updates(since):
+    with sqlite3.connect('toons.db') as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        cursor.execute('SELECT MIN(timestamp) FROM deaths LIMIT 1')
+
+        try:
+            ts = cursor.fetchall()[0][0]
+        except IndexError:
+            return True
+        else:
+            dt = parse_date(ts)
+            print(dt)
+            return abs(datetime.utcnow() - dt).total_seconds() > int(since)
 
 def update_toon(db_connection, name):
     cursor = db_connection.cursor()
@@ -152,10 +169,31 @@ def show_kdr(player, against=None):
 
         return kills, deaths
 
-def show_game_feed(types=('DEA', 'DUE')):
+def show_game_feed(types=('DEA', 'DUE'), update=True):
     url = '%s.json' % API_URL.replace('characters', 'gamefeed')
     data = requests.get(url).json()
-    return [row for row in data if row['type'] in types]
+    feed = [row for row in data if row['type'] in types]
+    if not update:
+        return feed
+    else:
+        deaths_added = 0
+        for death in feed:
+            try:
+                corpse, killer = death['description'].split(' was slain by ')
+            except ValueError:
+                killer, corpse = death['description'].split(' defeated ')
+                killer = killer.strip()
+                corpse = corpse.split(None, 1)[0]
+            else:
+                killer = killer.strip().rstrip('.')
+                corpse = corpse.strip()
+
+            with sqlite3.connect('toons.db') as conn:
+                setup_db_if_blank(conn)
+                if get_or_create_deathsight(conn, external_id=str(death['id']),
+                                            killer=killer, corpse=corpse):
+                    deaths_added += 1
+        return deaths_added
 
 
 def show_toon_archive():
@@ -196,25 +234,8 @@ if __name__ == '__main__':
             print(', '.join(toons[city]))
         elif arg.lower() == 'update':
             toons = list_toons(update=True)
-            toon_list = list_toons(quick=True)
-            print('%i toons updated!' % len(toon_list))
-            deaths_added = 0
-            for death in show_game_feed():
-                try:
-                    corpse, killer = death['description'].split(' was slain by ')
-                except ValueError:
-                    killer, corpse = death['description'].split(' defeated ')
-                    killer = killer.strip()
-                    corpse = corpse.split(None, 1)[0]
-                else:
-                    killer = killer.strip().rstrip('.')
-                    corpse = corpse.strip()
-
-                with sqlite3.connect('toons.db') as conn:
-                    setup_db_if_blank(conn)
-                    if get_or_create_deathsight(conn, external_id=str(death['id']),
-                                                killer=killer, corpse=corpse):
-                        deaths_added += 1
+            print('%i toons updated!' % len(toons))
+            deaths_added = show_game_feed(update=True)
             print('%i deaths added!' % deaths_added)
         elif arg.lower() == 'offline':
             toon_archive = show_toon_archive()

@@ -158,6 +158,11 @@ async def on_message(message):
         else:
             await message.channel.send('```%s```' % '\n'.join(msg))
 
+    if check_for_updates(300):
+        toons_updated = len(list_toons(update=True))
+        deaths_added = show_game_feed(update=True)
+        print('%i toons updated; %i deaths added.' % (toons_updated, deaths_added))
+
 
 if __name__ == '__main__':
     client.run(os.environ['ACHAEA_WHOBOT_TOKEN'])

@@ -133,7 +133,7 @@ def show_kdr(player, against=None):
             args.append(against)
         cursor.execute(sql, args)
         try:
-            kills = cursor.fecthall()[0][0]
+            kills = cursor.fetchall()[0][0]
         except IndexError:
             kills = 0
 

@@ -93,13 +93,13 @@ async def on_message(message):
         msg.extend([death['description'] for death in show_game_feed()])
     elif content.startswith('!kdr'):
         try:
-            _, player, against = content.split()
+            _, player, against = content.split(None, 2)
         except ValueError:
             against = None
             try:
                 _, player = content.split()
             except ValueError:
-                pass
+                player = None
         kills, deaths = show_kdr(player, against)
         if not kills and not deaths:
             if against:

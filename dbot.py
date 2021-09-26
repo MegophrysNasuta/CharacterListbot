@@ -103,7 +103,9 @@ async def on_message(message):
         kills, deaths = show_kdr(player, against)
         if not kills and not deaths:
             if against:
-                msg.append('No records for %s vs %s.' % (player.title(), against.title()))
+                if ' ' not in against:
+                    against = against.title()
+                msg.append('No records for %s vs %s.' % (player.title(), against))
             else:
                 msg.append('No records for %s.' % player.title())
         else:
@@ -113,8 +115,10 @@ async def on_message(message):
                 kdr = 'infinite'
 
             if against:
+                if ' ' not in against:
+                    against = against.title()
                 rpt_line = '%s has killed %s %i times and died %i times. KDR: %s'
-                rpt_line %= (player.title(), against.title(), kills, deaths, kdr)
+                rpt_line %= (player.title(), against, kills, deaths, kdr)
             else:
                 rpt_line = '%s has killed %i times and died %i times. KDR: %s'
                 rpt_line %= (player.title(), kills, deaths, kdr)

@@ -85,7 +85,7 @@ def check_for_updates(since):
                              int(since))
 
         if do_update:
-            cursor.execute('INSERT INTO updates')
+            cursor.execute('INSERT INTO updates (timestamp) VALUES null')
         return do_update
 
 def update_toon(db_connection, name):

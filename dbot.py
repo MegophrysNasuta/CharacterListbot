@@ -7,7 +7,8 @@ import sys
 
 import discord
 
-from clist import (CharacterNotFound, list_toons, show_game_feed, show_kdr,
+from clist import (CharacterNotFound, check_for_updates,
+                   list_toons, show_game_feed, show_kdr,
                    show_toon_archive, search_toon_archive, to_num)
 
 

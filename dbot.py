@@ -89,7 +89,7 @@ async def on_message(message):
             except ZeroDivisionError:
                 msg.append('Ow. What just happened?')
             except TypeError:
-                msg.append('Think of me as like a small Casio. I think you need a TI-92 for that one.')
+                msg.append('Think of me like a small Casio. I think you need a TI-92 for that one.')
     elif (content.startswith('!whois') or
             content.startswith('!honors')):
         try:

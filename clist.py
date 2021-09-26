@@ -186,7 +186,9 @@ if __name__ == '__main__':
             total += len(toons[city])
         print('%i online.' % total)
     else:
-        if arg.lower() in ('ashtan', 'cyrene', 'eleusis',
+        if arg.lower() == 'hi':
+            print('Hello, you')
+        elif arg.lower() in ('ashtan', 'cyrene', 'eleusis',
                            'hashan', 'mhaldor', 'targossas'):
             city = arg.lower()
             toons = list_toons()

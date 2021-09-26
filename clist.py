@@ -71,6 +71,8 @@ def check_for_updates(since):
         except IndexError:
             return True
         else:
+            if not ts:
+                return True
             dt = parse_date(ts)
             print(dt)
             return abs(datetime.utcnow() - dt).total_seconds() > int(since)

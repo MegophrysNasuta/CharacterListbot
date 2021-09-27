@@ -141,7 +141,7 @@ async def on_message(message):
         else:
             result = show_death_history(corpse=player)
             msg.append(('Since %s, the following deaths have been '
-                        'recorded for %s:' % (result['since'], corpse)))
+                        'recorded for %s:' % (result['since'], player)))
             msg.append('')
             for row in result['deaths']:
                 msg.append('Deaths to %s: %i' % row[:2])

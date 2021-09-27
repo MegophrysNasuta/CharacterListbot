@@ -141,11 +141,14 @@ async def on_message(message):
         else:
             player = player.title()
             result = show_death_history(corpse=player)
-            msg.append(('Since %s, the following deaths have been '
-                        'recorded for %s:' % (result['since'], player)))
-            msg.append('')
-            for row in result['deaths']:
-                msg.append('Deaths to %s: %i' % row[:2])
+            if result['since'] is not None:
+                msg.append(('Since %s, the following deaths have been '
+                            'recorded for %s:' % (result['since'], player)))
+                msg.append('')
+                for row in result['deaths']:
+                    msg.append('Deaths to %s: %i' % row[:2])
+            else:
+                msg.append('No deaths recorded for %s.' % player)
     elif content.startswith('!kdr'):
         try:
             _, player, against = content.split(None, 2)

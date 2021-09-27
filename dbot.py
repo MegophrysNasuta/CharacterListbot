@@ -139,6 +139,7 @@ async def on_message(message):
         except ValueError:
             msg.extend([death['description'] for death in show_game_feed()])
         else:
+            player = player.title()
             result = show_death_history(corpse=player)
             msg.append(('Since %s, the following deaths have been '
                         'recorded for %s:' % (result['since'], player)))

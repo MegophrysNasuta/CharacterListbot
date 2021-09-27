@@ -55,6 +55,7 @@ def setup_db_if_blank(db_connection):
                                        killer varchar(255) NOT NULL,
                                        corpse varchar(255) NOT NULL,
                                        external_id varchar(255) NOT NULL,
+                                       kdr_count tinyint DEFAULT 0,
                                        timestamp datetime DEFAULT CURRENT_TIMESTAMP);
     """
     db_connection.cursor().execute(sql)
@@ -98,15 +99,16 @@ def update_toon(db_connection, name):
     return data
 
 
-def get_or_create_deathsight(db_connection, killer, corpse, external_id):
+def get_or_create_deathsight(db_connection, killer, corpse, external_id,
+                             counts_for_kdr=False):
     cursor = db_connection.cursor()
     cursor.execute('SELECT d.killer, d.corpse FROM deaths d WHERE d.external_id == ?;',
                    (external_id,))
     try:
         killer, corpse = cursor.fetchall()[0]
     except (IndexError, ValueError):
-        cursor.execute('INSERT INTO deaths (killer, corpse, external_id) VALUES (?, ?, ?)',
-                       (killer, corpse, external_id))
+        cursor.execute('INSERT INTO deaths (killer, corpse, external_id, kdr_count) VALUES (?, ?, ?, ?)',
+                       (killer, corpse, external_id, int(counts_for_kdr)))
         return True
     else:
         return False
@@ -144,19 +146,34 @@ def list_toons(update=False, quick=False):
     return toon_list
 
 
-def show_death_history():
+def show_death_history(corpse=None):
     with sqlite3.connect('toons.db') as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
-        cursor.execute('SELECT killer, corpse from deaths')
-        return cursor.fetchall()
+        if corpse:
+            cursor.execute('SELECT MIN(timestamp) FROM deaths WHERE corpse == ?', (corpse,))
+            try:
+                min_ts = cursor.fetchall()[0][0]
+            except IndexError:
+                return
+            cursor.execute('SELECT killer, COUNT(killer) FROM deaths WHERE corpse == ?',
+                           (corpse,))
+            return {'since': min_ts, 'deaths': cursor.fetchall()}
+        else:
+            cursor.execute('SELECT MIN(timestamp) FROM deaths')
+            try:
+                min_ts = cursor.fetchall()[0][0]
+            except IndexError:
+                return
+            cursor.execute('SELECT killer, corpse FROM deaths')
+            return {'since': min_ts, 'deaths': cursor.fetchall()}
 
 
 def show_kdr(player, against=None):
     with sqlite3.connect('toons.db') as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
-        sql = 'SELECT count(corpse) FROM deaths WHERE killer == ?'
+        sql = 'SELECT count(corpse) FROM deaths WHERE kdr_count == 1 AND killer == ?'
         args = [player.title()]
         if against:
             sql += ' AND corpse == ?'
@@ -167,7 +184,7 @@ def show_kdr(player, against=None):
         except IndexError:
             kills = 0
 
-        sql = 'SELECT count(killer) FROM deaths WHERE corpse == ?'
+        sql = 'SELECT count(killer) FROM deaths WHERE kdr_count == 1 AND corpse == ?'
         if against:
             sql += ' AND killer == ?'
         cursor.execute(sql, args)
@@ -197,10 +214,19 @@ def show_game_feed(types=('DEA', 'DUE'), update=False):
                 killer = killer.strip().rstrip('.')
                 corpse = corpse.strip()
 
+            counts_for_kdr = (death['type'] == 'DEA' and
+                              ' ' not in killer)
+            if counts_for_kdr:
+                try:
+                    get_toon_from_api(killer)
+                except CharacterNotFound:
+                    counts_for_kdr = False
+
             with sqlite3.connect('toons.db') as conn:
                 setup_db_if_blank(conn)
                 if get_or_create_deathsight(conn, external_id=str(death['id']),
-                                            killer=killer, corpse=corpse):
+                                            killer=killer, corpse=corpse,
+                                            counts_for_kdr=counts_for_kdr):
                     deaths_added += 1
         return deaths_added
 
@@ -252,8 +278,9 @@ if __name__ == '__main__':
                 print(toon[1], end=', ')
             print('%i Achaeans known.' % len(toon_archive))
         elif arg.lower() == 'deathhistory':
-            for death in show_death_history():
+            for row['deaths'] in show_death_history():
                 print('%s killed %s.' % death[:2])
+            print('(records since %s)' % row['since'])
         elif arg.lower() == 'gamefeed':
             for death in show_game_feed():
                 print(death['description'])

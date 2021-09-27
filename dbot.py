@@ -133,8 +133,18 @@ async def on_message(message):
                         x=int(data.pop('xp_rank')),
                     )
                 )
-    elif content.startswith('!death'):
-        msg.extend([death['description'] for death in show_game_feed()])
+    elif content.startswith('!deathsights'):
+        try:
+            _, player = content.split(None, 1)
+        except ValueError:
+            msg.extend([death['description'] for death in show_game_feed()])
+        else:
+            result = show_death_history(corpse=player)
+            msg.append(('Since %s, the following deaths have been '
+                        'recorded for %s:' % (result['since'], corpse))
+            msg.append('')
+            for row in result['deaths']:
+                msg.append('Deaths to %s: %i' % row[:2])
     elif content.startswith('!kdr'):
         try:
             _, player, against = content.split(None, 2)
@@ -161,14 +171,14 @@ async def on_message(message):
                     rpt_line = '%s is on a perfect %i-kill streak!'
                     rpt_line %= (player.title(), kills)
             else:
-                kdr = '%i%%' % ((kills / deaths) * 100)
+                kdr = '%.2f' % (kills / deaths)
                 if against:
                     if ' ' not in against:
                         against = against.title()
                     rpt_line = '%s has killed %s %i times and died %i times. KDR: %s'
                     rpt_line %= (player.title(), against, kills, deaths, kdr)
                 else:
-                    rpt_line = '%s has killed %i times and died %i times. KDR: %s'
+                    rpt_line = '%s has %i kills and %i deaths. KDR: %s'
                     rpt_line %= (player.title(), kills, deaths, kdr)
 
             msg.append(rpt_line)

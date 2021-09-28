@@ -156,7 +156,7 @@ def show_death_history(corpse=None):
                 min_ts = cursor.fetchall()[0][0]
             except IndexError:
                 return
-            cursor.execute('SELECT killer, COUNT(killer) FROM deaths WHERE corpse == ?',
+            cursor.execute('SELECT killer, COUNT(killer) FROM deaths WHERE corpse == ? GROUP BY killer',
                            (corpse,))
             return {'since': min_ts, 'deaths': cursor.fetchall()}
         else:

@@ -4,9 +4,11 @@ from collections import defaultdict
 import operator as op
 import os
 import random
+import re
 import string
 import sys
 
+from dateutil.parser import parse as parse_date
 import discord
 
 from clist import (CharacterNotFound, check_for_updates,
@@ -15,6 +17,9 @@ from clist import (CharacterNotFound, check_for_updates,
 
 
 client = discord.Client()
+
+
+REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
 
 
 math_operators = {ast.Add: op.add, ast.Sub: op.sub, ast.Mult: op.mul,
@@ -133,6 +138,14 @@ async def on_message(message):
                         x=int(data.pop('xp_rank')),
                     )
                 )
+    elif REMINDER_REGEX.match(content):
+        matches = REMINDER_REGEX.match(content)
+        try:
+            when = parse_date(matches.when, fuzzy=True)
+        except ValueError as e:
+            msg.append(str(e))
+        else:
+            msg.append('Set reminder to "%s" for %s!' % (what, matches.when))
     elif content.startswith('!deathsights'):
         try:
             _, player = content.split(None, 1)

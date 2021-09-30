@@ -205,10 +205,10 @@ def show_kdr(player, against=None):
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         sql = 'SELECT count(corpse) FROM deaths WHERE kdr_count = 1 AND killer = \'%s\''
-        args = [player.title()]
+        args = player.title()
         if against:
             sql += ' AND corpse = \'%s\''
-            args.append(against.title())
+            args = (args, against.title())
         cursor.execute(sql % args)
         try:
             kills = cursor.fetchall()[0][0]

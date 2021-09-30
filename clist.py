@@ -107,8 +107,9 @@ def check_for_updates(since):
             if not ts:
                 do_update = True
             else:
-                dt = parse_date(ts)
-                do_update = (abs(datetime.utcnow() - dt).total_seconds() >
+                if not isinstance(dt, datetime):
+                    ts = parse_date(ts)
+                do_update = (abs(datetime.utcnow() - ts).total_seconds() >
                              int(since))
 
         if do_update:

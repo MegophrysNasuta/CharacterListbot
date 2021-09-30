@@ -141,11 +141,11 @@ async def on_message(message):
     elif REMINDER_REGEX.match(content):
         matches = REMINDER_REGEX.match(content)
         try:
-            when = parse_date(matches.when, fuzzy=True)
+            when = parse_date(matches['when'], fuzzy=True)
         except ValueError as e:
             msg.append(str(e))
         else:
-            msg.append('Set reminder to "%s" for %s!' % (what, matches.when))
+            msg.append('Set reminder to "%s" for %s!' % (matches['what'], when))
     elif content.startswith('!deathsights'):
         try:
             _, player = content.split(None, 1)

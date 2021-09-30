@@ -1,14 +1,17 @@
 #! /usr/bin/env python3
 from collections import defaultdict
 from datetime import datetime
+import itertools
 import json
+from os import environ as env
 from pprint import pprint
-import sqlite3
 import string
 import sys
 
 from dateutil.parser import parse as parse_date
 import requests
+
+from db import DBContextManager
 
 
 API_URL = 'http://api.achaea.com/characters'
@@ -38,6 +41,10 @@ def to_num(n):
         return int(n)
 
 
+def escape(s):
+    return str(s).replace("'", "''")
+
+
 def get_toon_from_api(name):
     data = requests.get('%s/%s.json' % (API_URL, name)).json()
     if 'name' not in data:
@@ -46,28 +53,47 @@ def get_toon_from_api(name):
 
 
 def setup_db_if_blank(db_connection):
-    sql = "CREATE TABLE IF NOT EXISTS characters (id serial PRIMARY KEY, "
-    cols = (('%s varchar(255) NOT NULL' % field) for field in API_FIELDS)
+    db = {
+        'postgres': {
+            'pk': 'serial PRIMARY KEY',
+            'bool': 'smallint DEFAULT 0',
+            'text': 'varchar(255) NOT NULL',
+            'date': 'timestamp DEFAULT CURRENT_TIMESTAMP',
+        },
+        'sqlite': {
+            'pk': 'integer PRIMARY KEY',
+            'bool': 'integer DEFAULT 0',
+            'text': 'text NOT NULL',
+            'date': 'text DEFAULT CURRENT_TIMESTAMP',
+        },
+    }
+    db_type = 'postgres' if 'DATABASE_URL' in env else 'sqlite'
+
+    sql = "CREATE TABLE IF NOT EXISTS characters (id %s, "
+    sql %= db[db_type]['pk']
+
+    cols = (('%s %s' % (field, db[db_type]['text'])) for field in API_FIELDS)
     sql += ', '.join(cols) + ');'
     db_connection.cursor().execute(sql)
+
     sql = """
-    CREATE TABLE IF NOT EXISTS deaths (id serial PRIMARY_KEY,
-                                       killer varchar(255) NOT NULL,
-                                       corpse varchar(255) NOT NULL,
-                                       external_id varchar(255) NOT NULL,
-                                       kdr_count tinyint DEFAULT 0,
-                                       timestamp datetime DEFAULT CURRENT_TIMESTAMP);
-    """
+    CREATE TABLE IF NOT EXISTS deaths (id %(pk)s,
+                                       killer %(text)s,
+                                       corpse %(text)s,
+                                       external_id %(text)s,
+                                       kdr_count %(bool)s,
+                                       timestamp %(date)s);
+    """ % db[db_type]
     db_connection.cursor().execute(sql)
     sql = """
-    CREATE TABLE IF NOT EXISTS updates (id serial PRIMARY_KEY,
-                                        timestamp datetime DEFAULT CURRENT_TIMESTAMP)
-    """
+    CREATE TABLE IF NOT EXISTS updates (id %(pk)s,
+                                        timestamp %(date)s);
+    """ % db[db_type]
     db_connection.cursor().execute(sql)
 
 
 def check_for_updates(since):
-    with sqlite3.connect('toons.db') as conn:
+    with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         cursor.execute('SELECT MAX(timestamp) FROM updates LIMIT 1')
@@ -89,26 +115,31 @@ def check_for_updates(since):
             cursor.execute('INSERT INTO updates (timestamp) VALUES (CURRENT_TIMESTAMP)')
         return do_update
 
+
 def update_toon(db_connection, name):
     cursor = db_connection.cursor()
     data = get_toon_from_api(name)
-    cursor.execute('UPDATE characters AS c SET %s WHERE c.name==:name' % (
-                        ','.join(('%s=%s' % (field, ':%s' % field)
-                                          for field in API_FIELDS))
-                    ), data)
+    sql = ('UPDATE characters SET %s WHERE name = \'%s\'' % (
+              ', '.join(('%s=\'%s\'' % (field, escape(data[field]))
+                        for field in API_FIELDS)),
+              escape(name)
+          ))
+    cursor.execute(sql)
     return data
 
 
 def get_or_create_deathsight(db_connection, killer, corpse, external_id,
                              counts_for_kdr=False):
     cursor = db_connection.cursor()
-    cursor.execute('SELECT d.killer, d.corpse FROM deaths d WHERE d.external_id == ?;',
-                   (external_id,))
+    cursor.execute(('SELECT d.killer, d.corpse FROM deaths d '
+                    'WHERE d.external_id = \'%s\';' % external_id))
     try:
         killer, corpse = cursor.fetchall()[0]
     except (IndexError, ValueError):
-        cursor.execute('INSERT INTO deaths (killer, corpse, external_id, kdr_count) VALUES (?, ?, ?, ?)',
-                       (killer, corpse, external_id, int(counts_for_kdr)))
+        cursor.execute(('INSERT INTO deaths (killer, corpse, external_id, kdr_count) '
+                        'VALUES (\'%s\', \'%s\', \'%s\', %i)' % (
+                            escape(killer), escape(corpse), external_id, int(counts_for_kdr)
+                        )))
         return True
     else:
         return False
@@ -116,16 +147,14 @@ def get_or_create_deathsight(db_connection, killer, corpse, external_id,
 
 def get_or_create_toon(db_connection, name):
     cursor = db_connection.cursor()
-    cursor.execute('SELECT c.city FROM characters c WHERE c.name == ?;',
-                   (name,))
+    cursor.execute('SELECT c.city FROM characters c WHERE c.name = \'%s\';' % escape(name))
     try:
         return {'city': cursor.fetchall()[0][0]}
     except IndexError:
         data = get_toon_from_api(name)
-        cursor.execute('INSERT INTO characters (%s) VALUES (%s)' %
+        cursor.execute('INSERT INTO characters (%s) VALUES (\'%s\')' %
                        (', '.join(API_FIELDS),
-                        ', '.join((':%s' % field) for field in API_FIELDS)),
-                       data)
+                        '\', \''.join(escape(data[field]) for field in API_FIELDS)))
         return data
 
 
@@ -136,7 +165,7 @@ def list_toons(update=False, quick=False):
     if quick:
         return [toon['name'] for toon in toons]
 
-    with sqlite3.connect('toons.db') as conn:
+    with DBContextManager() as conn:
         setup_db_if_blank(conn)
         db_action = update_toon if update else get_or_create_toon
         for toon in toons:
@@ -147,17 +176,18 @@ def list_toons(update=False, quick=False):
 
 
 def show_death_history(corpse=None):
-    with sqlite3.connect('toons.db') as conn:
+    with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         if corpse:
-            cursor.execute('SELECT MIN(timestamp) FROM deaths WHERE corpse == ?', (corpse,))
+            cursor.execute(('SELECT MIN(timestamp) FROM deaths '
+                            'WHERE corpse = \'%s\';' % corpse))
             try:
                 min_ts = cursor.fetchall()[0][0]
             except IndexError:
                 return
-            cursor.execute('SELECT killer, COUNT(killer) FROM deaths WHERE corpse == ? GROUP BY killer',
-                           (corpse,))
+            cursor.execute(('SELECT killer, COUNT(killer) FROM deaths '
+                            'WHERE corpse = \'%s\' GROUP BY killer' % corpse))
             return {'since': min_ts, 'deaths': cursor.fetchall()}
         else:
             cursor.execute('SELECT MIN(timestamp) FROM deaths')
@@ -170,24 +200,24 @@ def show_death_history(corpse=None):
 
 
 def show_kdr(player, against=None):
-    with sqlite3.connect('toons.db') as conn:
+    with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
-        sql = 'SELECT count(corpse) FROM deaths WHERE kdr_count == 1 AND killer == ?'
+        sql = 'SELECT count(corpse) FROM deaths WHERE kdr_count = 1 AND killer = \'%s\''
         args = [player.title()]
         if against:
-            sql += ' AND corpse == ?'
+            sql += ' AND corpse = \'%s\''
             args.append(against.title())
-        cursor.execute(sql, args)
+        cursor.execute(sql % args)
         try:
             kills = cursor.fetchall()[0][0]
         except IndexError:
             kills = 0
 
-        sql = 'SELECT count(killer) FROM deaths WHERE kdr_count == 1 AND corpse == ?'
+        sql = 'SELECT count(killer) FROM deaths WHERE kdr_count = 1 AND corpse = \'%s\''
         if against:
-            sql += ' AND killer == ?'
-        cursor.execute(sql, args)
+            sql += ' AND killer = \'%s\''
+        cursor.execute(sql % args)
         try:
             deaths = cursor.fetchall()[0][0]
         except IndexError:
@@ -222,7 +252,7 @@ def show_game_feed(types=('DEA', 'DUE'), update=False):
                 except CharacterNotFound:
                     counts_for_kdr = False
 
-            with sqlite3.connect('toons.db') as conn:
+            with DBContextManager() as conn:
                 setup_db_if_blank(conn)
                 if get_or_create_deathsight(conn, external_id=str(death['id']),
                                             killer=killer, corpse=corpse,
@@ -232,7 +262,7 @@ def show_game_feed(types=('DEA', 'DUE'), update=False):
 
 
 def show_toon_archive():
-    with sqlite3.connect('toons.db') as conn:
+    with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM characters')
@@ -240,7 +270,7 @@ def show_toon_archive():
 
 
 def search_toon_archive(name):
-    with sqlite3.connect('toons.db') as conn:
+    with DBContextManager() as conn:
         setup_db_if_blank(conn)
         return get_or_create_toon(conn, name)
 
@@ -252,7 +282,7 @@ if __name__ == '__main__':
         # list all online
         toons = list_toons()
         total = 0
-        for city in toons:
+        for city in sorted(toons):
             print('%s (%s)' % (city.title(), len(toons[city])))
             print(', '.join(toons[city]))
             print()
@@ -269,7 +299,7 @@ if __name__ == '__main__':
             print(', '.join(toons[city]))
         elif arg.lower() == 'update':
             toons = list_toons(update=True)
-            print('%i toons updated!' % len(toons))
+            print('Toons updated!')
             deaths_added = show_game_feed(update=True)
             print('%i deaths added!' % deaths_added)
         elif arg.lower() == 'offline':
@@ -278,9 +308,13 @@ if __name__ == '__main__':
                 print(toon[1], end=', ')
             print('%i Achaeans known.' % len(toon_archive))
         elif arg.lower() == 'deathhistory':
-            for row['deaths'] in show_death_history():
+            death = None
+            for death in show_death_history()['deaths']:
                 print('%s killed %s.' % death[:2])
-            print('(records since %s)' % row['since'])
+            if death:
+                print('(records since %s)' % death['since'])
+            else:
+                print('No records found!')
         elif arg.lower() == 'gamefeed':
             for death in show_game_feed():
                 print(death['description'])

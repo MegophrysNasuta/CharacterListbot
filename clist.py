@@ -98,8 +98,9 @@ def setup_db_if_blank(db_connection):
     sql = """
     CREATE TABLE IF NOT EXISTS polls (id %(pk)s,
                                       question %(text)s,
-                                      owner %(text)s),
-                                      locked %(bool)s;
+                                      owner %(text)s,
+                                      locked %(bool)s,
+                                      message_id %(text)s);
     """ % db[DB_TYPE]
     db_connection.cursor().execute(sql)
     sql = """
@@ -107,6 +108,7 @@ def setup_db_if_blank(db_connection):
                                          poll %(int)s%(inline_fk)s,
                                          emoji %(text)s,
                                          meaning %(text)s%(outro_fk)s);
+    UNIQUE (poll, emoji, meaning)
     """
     arg = db[DB_TYPE]
     arg['inline_fk'] = ' REFERENCES polls(id)' if DB_TYPE == 'postgres' else ''
@@ -139,12 +141,24 @@ def check_for_updates(since):
         return do_update
 
 
-def create_poll(question, owner, locked=False):
+def create_poll(question, owner, message_id, locked=False):
     with DBContextManager() as conn:
+        setup_db_if_blank(conn)
         cursor = conn.cursor()
-        sql = "INSERT INTO polls (question, owner, locked) VALUES (%s, %s, %s) RETURNING id"
-        cursor.execute(sql, (question, owner, int(bool(locked))))
+        sql = ("INSERT INTO polls (question, owner, message_id, locked) "
+               "VALUES (%s, %s, %s, %s) RETURNING id")
+        cursor.execute(sql, (question, owner, message_id, int(bool(locked))))
         return cursor.fetchone()[0]
+
+
+def create_pollopt(poll_id, emoji, meaning):
+    with DBContextManager() as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        sql = ("INSERT INTO pollopts (poll, emoji, meaning) VALUES (%s, %s, %s) "
+               "RETURNING id, poll ON CONFLICT DO NOTHING")
+        cursor.execute(sql, (poll_id, emoji, meaning))
+        return cursor.fetchone()
 
 
 def get_or_create_deathsight(db_connection, killer, corpse, external_id,
@@ -177,6 +191,31 @@ def get_or_create_toon(db_connection, name):
                                len(API_FIELDS)),
                        [data[field] for field in API_FIELDS])
         return data
+
+
+def get_poll_report(poll_id, message):
+    with DBContextManager() as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        cursor.execute('SELECT message_id, question, owner FROM polls WHERE id = %s', (poll_id,))
+        message_id, question, owner = cursor.fetchone()
+        poll_msg = message.channel.fetch_message(message_id)
+        report_msg = ['Poll %i posted by <@%s>' % (poll_id, owner),
+                      '> %s' % question.title(), '']
+        for reaction in poll_msg.reactions:
+            cursor.execute(('SELECT meaning FROM pollopts WHERE '
+                            'poll = %s AND emoji = %s'), (poll_id, reaction.name))
+            meaning = cursor.fetchone()[0]
+            report_msg.append('%s (%s): %i' % (reaction.name, meaning, len(reaction.users)))
+        return report_msg
+
+
+def is_poll_locked(poll_id):
+    with DBContextManager() as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        cursor.execute('SELECT locked FROM polls WHERE id = %s', (poll_id,))
+        return bool(cursor.fetchone()[0])
 
 
 def list_toons(update=False, quick=False):

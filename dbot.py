@@ -18,6 +18,7 @@ client = discord.Client()
 
 
 POLL_REGEX = re.compile('\!poll(?P<stingy> stingy)? (?P<question>.*)')
+POLL_OPEN_REGEX = re.compile('^Poll (?P<poll_id>\d+)')
 REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
 
 
@@ -52,6 +53,28 @@ def eval_expr(expr):
 @client.event
 async def on_ready():
     print('Ready!')
+
+
+@client.event
+async def on_reaction_add(reaction, user):
+    if reaction.message.author != client.user:
+        return
+
+    def set_pollopt():
+        args = create_pollopt(matches['poll_id'], reaction.name, reaction.name)
+        msg = 'Poll option %i for poll %i is :%s: (%s)'
+        args.extend([reaction.name, reaction.name])
+        await reaction.message.channel.send(msg % args)
+
+    matches = POLL_OPEN_REGEX.matches(reaction.message.content)
+    if matches and reaction.count == 1:
+        if is_poll_locked(matches['poll_id']):
+            if user == get_poll_owner(matches['poll_id'])):
+                set_pollopt()
+            else:
+                reaction.remove()
+        else:
+            set_pollopt()
 
 
 @client.event
@@ -139,8 +162,17 @@ async def on_message(message):
                 )
     elif POLL_REGEX.match(content):
         matches = POLL_REGEX.match(content)
-        poll_id = create_poll(matches['question'], message.author.id, matches['stingy'])
-        msg.append('Poll %i set to "%s"' % (poll_id, matches['question']))
+        poll_id = create_poll(matches['question'], message.author.id,
+                              message.id, matches['stingy'])
+        msg.append('Poll %i:\n> %s\n\nAdd reacji to respond.' % (poll_id, matches['question'].title()))
+    elif content.startswith('!pollreport'):
+        try:
+            _, poll_id = content.split(None, 1)
+            poll_id = int(poll_id)
+        except ValueError:
+            msg.append("That's not a poll. You made that up.")
+        else:
+            msg.extend(get_poll_report(poll_id, message))
     elif REMINDER_REGEX.match(content):
         matches = REMINDER_REGEX.match(content)
         try:

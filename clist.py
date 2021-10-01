@@ -107,8 +107,8 @@ def setup_db_if_blank(db_connection):
     CREATE TABLE IF NOT EXISTS pollopts (id %(pk)s,
                                          poll %(int)s%(inline_fk)s,
                                          emoji %(text)s,
-                                         meaning %(text)s%(outro_fk)s);
-    UNIQUE (poll, emoji, meaning)
+                                         meaning %(text)s%(outro_fk)s
+                                         UNIQUE (poll, emoji, meaning));
     """
     arg = db[DB_TYPE]
     arg['inline_fk'] = ' REFERENCES polls(id)' if DB_TYPE == 'postgres' else ''

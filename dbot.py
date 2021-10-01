@@ -10,6 +10,7 @@ import sys
 
 from dateutil.parser import parse as parse_date
 import discord
+from discord.ext import commands
 
 from clist import (CharacterNotFound, check_for_updates,
                    list_toons, show_death_history, show_game_feed, show_kdr,
@@ -17,6 +18,7 @@ from clist import (CharacterNotFound, check_for_updates,
 
 
 client = discord.Client()
+bot = commands.Bot(command_prefix='!')
 
 
 REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
@@ -56,34 +58,46 @@ async def on_ready():
 
 
 @client.event
+async def on_reaction_add(reaction, user):
+    pass
+
+
+@bot.command()
+async def honours(ctx, *, arg):
+    taunt_the_uk = (
+        'TEAM AMERICA, F**K YEAH! :flag_us::flag_us::flag_us:',
+        'Is this Romaen??',
+        "IT'S HONORS, BABY!! WOOOOO!!!! *\*fires machine gun into air\**",
+        "I don't have to listen to this British crap.",
+        "Rejoin the EU, already. What are y'all doing over there?",
+        """
+:flag_gb:                    :flag_gb:           :flag_gb: :flag_gb:
+:flag_gb::flag_gb:       :flag_gb:       :flag_gb:          :flag_gb:
+:flag_gb:      :flag_gb: :flag_gb:       :flag_gb:          :flag_gb:
+:flag_gb:                    :flag_gb:           :flag_gb: :flag_gb:
+        """,
+        "https://media.giphy.com/media/j0GW2I35KnU5e5BT7L/giphy.gif?cid=ecf05e47vnq3lhoqsc1ut9x06y1tvnqh07yi3qfesdxenz5k&rid=giphy.gif&ct=g",
+        "https://media.giphy.com/media/ZdxLZAMhQcaKbIGdug/giphy.gif?cid=ecf05e47dyuhhicefn0p2nak6v5dtia4i73jovj93sbnjp0g&rid=giphy.gif&ct=g",
+        "https://media.giphy.com/media/NaA840F7VJSHS/giphy.gif?cid=ecf05e47h7sot76tf80g7mss1pj5ru8bpywo8rfr0ltxdc20&rid=giphy.gif&ct=g",
+        "https://media.giphy.com/media/deSTGRBAr6TdkVEjCd/giphy.gif?cid=ecf05e478zcb8s57d8lxbjhm3pje0ixh0tmcr1sr2eet35mj&rid=giphy.gif&ct=g",
+    )
+    ctx.send(random.choice(taunt_the_uk))
+
+
+@bot.command()
+async def pet(ctx, arg):
+    if arg.lower() == 'cossi':
+        ctx.send('*rubs up against %s\'s leg*' % ctx.author.mention)
+
+
+@client.event
 async def on_message(message):
     if message.author == client.user:
         return
 
     msg = []
     content = message.content.lower()
-    if content.startswith('!honours'):
-        taunt_the_uk = (
-            'TEAM AMERICA, F**K YEAH! :flag_us::flag_us::flag_us:',
-            'Is this Romaen??',
-            "IT'S HONORS, BABY!! WOOOOO!!!! *\*fires machine gun into air\**",
-            "I don't have to listen to this British crap.",
-            "Rejoin the EU, already. What are y'all doing over there?",
-            """
-:flag_gb:                    :flag_gb:           :flag_gb: :flag_gb:
-:flag_gb::flag_gb:       :flag_gb:       :flag_gb:          :flag_gb:
-:flag_gb:      :flag_gb: :flag_gb:       :flag_gb:          :flag_gb:
-:flag_gb:                    :flag_gb:           :flag_gb: :flag_gb:
-            """,
-            "https://media.giphy.com/media/j0GW2I35KnU5e5BT7L/giphy.gif?cid=ecf05e47vnq3lhoqsc1ut9x06y1tvnqh07yi3qfesdxenz5k&rid=giphy.gif&ct=g",
-            "https://media.giphy.com/media/ZdxLZAMhQcaKbIGdug/giphy.gif?cid=ecf05e47dyuhhicefn0p2nak6v5dtia4i73jovj93sbnjp0g&rid=giphy.gif&ct=g",
-            "https://media.giphy.com/media/NaA840F7VJSHS/giphy.gif?cid=ecf05e47h7sot76tf80g7mss1pj5ru8bpywo8rfr0ltxdc20&rid=giphy.gif&ct=g",
-            "https://media.giphy.com/media/deSTGRBAr6TdkVEjCd/giphy.gif?cid=ecf05e478zcb8s57d8lxbjhm3pje0ixh0tmcr1sr2eet35mj&rid=giphy.gif&ct=g",
-        )
-        msg.append(random.choice(taunt_the_uk))
-    elif content.startswith('!pet cossi'):
-        msg.append('*rubs up against <@%s>\'s leg*' % message.author.id)
-    elif content.startswith('!math'):
+    if content.startswith('!math'):
         try:
             expr = content.split(None, 1)[1]
         except IndexError:
@@ -238,10 +252,6 @@ async def on_message(message):
         else:
             await message.channel.send('```%s```' % '\n'.join(msg))
 
-    if check_for_updates(300):
-        list_toons(update=True)
-        deaths_added = show_game_feed(update=True)
-        print('Toons updated; %i deaths added.' % deaths_added)
 
 
 if __name__ == '__main__':

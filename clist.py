@@ -107,8 +107,8 @@ def setup_db_if_blank(db_connection):
                                          meaning %(text)s%(outro_fk)s);
     """
     arg = db[DB_TYPE]
-    arg['inline_fk'] = ' REFERENCES poll(id)' if DB_TYPE == 'postgres' else ''
-    arg['outro_fk'] = ',\nFOREIGN KEY(poll) REFERENCES poll(id)' if DB_TYPE == 'sqlite' else ''
+    arg['inline_fk'] = ' REFERENCES polls(id)' if DB_TYPE == 'postgres' else ''
+    arg['outro_fk'] = ',\nFOREIGN KEY(poll) REFERENCES polls(id)' if DB_TYPE == 'sqlite' else ''
     db_connection.cursor().execute(sql % arg)
 
 

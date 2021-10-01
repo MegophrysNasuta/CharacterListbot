@@ -19,7 +19,7 @@ from clist import (CharacterNotFound, check_for_updates,
 client = discord.Client()
 
 
-POLL_REGEX = re.compile('\!poll( stingy)? (?P<question>.*)')
+POLL_REGEX = re.compile('\!poll(?<stingy> stingy)? (?P<question>.*)')
 REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
 
 
@@ -141,6 +141,8 @@ async def on_message(message):
                 )
     elif POLL_REGEX.match(content):
         matches = POLL_REGEX.match(content)
+        poll_id = create_poll(matches['question'], message.author.id, matches['stingy'])
+        msg.append('Poll %i set to "%s"' % (poll_id, matches['question']))
     elif REMINDER_REGEX.match(content):
         matches = REMINDER_REGEX.match(content)
         try:

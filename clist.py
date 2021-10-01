@@ -98,7 +98,8 @@ def setup_db_if_blank(db_connection):
     sql = """
     CREATE TABLE IF NOT EXISTS polls (id %(pk)s,
                                       question %(text)s,
-                                      owner %(text)s);
+                                      owner %(text)s),
+                                      locked %(bool)s;
     """ % db[DB_TYPE]
     db_connection.cursor().execute(sql)
     sql = """
@@ -138,11 +139,11 @@ def check_for_updates(since):
         return do_update
 
 
-def create_poll(question, owner):
+def create_poll(question, owner, locked=False):
     with DBContextManager() as conn:
         cursor = conn.cursor()
-        sql = "INSERT INTO polls (question, owner) VALUES (%s, %s) RETURNING id"
-        cursor.execute(sql, (question, owner))
+        sql = "INSERT INTO polls (question, owner, locked) VALUES (%s, %s, %s) RETURNING id"
+        cursor.execute(sql, (question, owner, int(bool(locked))))
         return cursor.fetchone()[0]
 
 

@@ -107,7 +107,7 @@ def setup_db_if_blank(db_connection):
     CREATE TABLE IF NOT EXISTS pollopts (id %(pk)s,
                                          poll %(int)s%(inline_fk)s,
                                          emoji %(text)s,
-                                         meaning %(text)s
+                                         meaning %(text)s,
                                          UNIQUE (poll, emoji, meaning)%(outro_fk)s);
     """
     arg = db[DB_TYPE]

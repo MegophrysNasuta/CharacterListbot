@@ -19,7 +19,7 @@ from clist import (CharacterNotFound, check_for_updates,
 client = discord.Client()
 
 
-POLL_REGEX = re.compile('\!poll(?<stingy> stingy)? (?P<question>.*)')
+POLL_REGEX = re.compile('\!poll(?P<stingy> stingy)? (?P<question>.*)')
 REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
 
 

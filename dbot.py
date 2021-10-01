@@ -69,7 +69,7 @@ async def on_reaction_add(reaction, user):
     matches = POLL_OPEN_REGEX.matches(reaction.message.content)
     if matches and reaction.count == 1:
         if is_poll_locked(matches['poll_id']):
-            if user == get_poll_owner(matches['poll_id'])):
+            if user == get_poll_owner(matches['poll_id']):
                 set_pollopt()
             else:
                 reaction.remove()

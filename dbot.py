@@ -19,6 +19,7 @@ from clist import (CharacterNotFound, check_for_updates,
 client = discord.Client()
 
 
+POLL_REGEX = re.compile('\!poll( stingy)? (?P<question>.*)')
 REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
 
 
@@ -138,6 +139,8 @@ async def on_message(message):
                         x=int(data.pop('xp_rank')),
                     )
                 )
+    elif POLL_REGEX.match(content):
+        matches = POLL_REGEX.match(content)
     elif REMINDER_REGEX.match(content):
         matches = REMINDER_REGEX.match(content)
         try:
@@ -237,11 +240,6 @@ async def on_message(message):
             await message.channel.send(msg[0])
         else:
             await message.channel.send('```%s```' % '\n'.join(msg))
-
-    if check_for_updates(300):
-        list_toons(update=True)
-        deaths_added = show_game_feed(update=True)
-        print('Toons updated; %i deaths added.' % deaths_added)
 
 
 if __name__ == '__main__':

@@ -29,6 +29,8 @@ API_FIELDS = (
     'explorer_rank',
 )
 
+DB_TYPE = 'postgres' if 'DATABASE_URL' in env else 'sqlite'
+
 
 class CharacterNotFound(KeyError):
     pass
@@ -41,8 +43,9 @@ def to_num(n):
         return int(n)
 
 
-def escape(s):
-    return str(s).replace("'", "''")
+def fmt_sql(sql, n):
+    if DB_TYPE == 'sqlite':
+        return sql % tuple('?' for _ in range(n))
 
 
 def get_toon_from_api(name):
@@ -59,20 +62,21 @@ def setup_db_if_blank(db_connection):
             'bool': 'smallint DEFAULT 0',
             'text': 'varchar(255) NOT NULL',
             'date': 'timestamp DEFAULT CURRENT_TIMESTAMP',
+            'int': 'int',
         },
         'sqlite': {
             'pk': 'integer PRIMARY KEY',
             'bool': 'integer DEFAULT 0',
             'text': 'text NOT NULL',
             'date': 'text DEFAULT CURRENT_TIMESTAMP',
+            'int': 'integer',
         },
     }
-    db_type = 'postgres' if 'DATABASE_URL' in env else 'sqlite'
 
     sql = "CREATE TABLE IF NOT EXISTS characters (id %s, "
-    sql %= db[db_type]['pk']
+    sql %= db[DB_TYPE]['pk']
 
-    cols = (('%s %s' % (field, db[db_type]['text'])) for field in API_FIELDS)
+    cols = (('%s %s' % (field, db[DB_TYPE]['text'])) for field in API_FIELDS)
     sql += ', '.join(cols) + ');'
     db_connection.cursor().execute(sql)
 
@@ -83,13 +87,29 @@ def setup_db_if_blank(db_connection):
                                        external_id %(text)s,
                                        kdr_count %(bool)s,
                                        timestamp %(date)s);
-    """ % db[db_type]
+    """ % db[DB_TYPE]
     db_connection.cursor().execute(sql)
     sql = """
     CREATE TABLE IF NOT EXISTS updates (id %(pk)s,
                                         timestamp %(date)s);
-    """ % db[db_type]
+    """ % db[DB_TYPE]
     db_connection.cursor().execute(sql)
+    sql = """
+    CREATE TABLE IF NOT EXISTS polls (id %(pk)s,
+                                      question %(text)s,
+                                      owner %(text)s);
+    """ % db[DB_TYPE]
+    db_connection.cursor().execute(sql)
+    sql = """
+    CREATE TABLE IF NOT EXISTS pollopts (id %(pk)s,
+                                         poll %(int)s%(inline_fk)s,
+                                         emoji %(text)s,
+                                         meaning %(text)s%(outro_fk)s);
+    """
+    arg = db[DB_TYPE]
+    arg['inline_fk'] = ' REFERENCES poll(id)' if DB_TYPE == 'postgres' else ''
+    arg['outro_fk'] = ',\nFOREIGN KEY(poll) REFERENCES poll(id)' if DB_TYPE == 'sqlite' else ''
+    db_connection.cursor().execute(sql % arg)
 
 
 def check_for_updates(since):
@@ -117,30 +137,25 @@ def check_for_updates(since):
         return do_update
 
 
-def update_toon(db_connection, name):
-    cursor = db_connection.cursor()
-    data = get_toon_from_api(name)
-    sql = ('UPDATE characters SET %s WHERE name = \'%s\'' % (
-              ', '.join(('%s=\'%s\'' % (field, escape(data[field]))
-                        for field in API_FIELDS)),
-              escape(name)
-          ))
-    cursor.execute(sql)
-    return data
+def create_poll(question, owner):
+    with DBContextManager() as conn:
+        cursor = conn.cursor()
+        sql = "INSERT INTO polls (question, owner) VALUES (%s, %s) RETURNING id"
+        cursor.execute(sql, (question, owner))
+        return cursor.fetchone()[0]
 
 
 def get_or_create_deathsight(db_connection, killer, corpse, external_id,
                              counts_for_kdr=False):
     cursor = db_connection.cursor()
-    cursor.execute(('SELECT d.killer, d.corpse FROM deaths d '
-                    'WHERE d.external_id = \'%s\';' % external_id))
+    cursor.execute(fmt_sql('SELECT d.killer, d.corpse FROM deaths d '
+                           "WHERE d.external_id = %s;", 1), (external_id,))
     try:
         killer, corpse = cursor.fetchall()[0]
     except (IndexError, ValueError):
-        cursor.execute(('INSERT INTO deaths (killer, corpse, external_id, kdr_count) '
-                        'VALUES (\'%s\', \'%s\', \'%s\', %i)' % (
-                            escape(killer), escape(corpse), external_id, int(counts_for_kdr)
-                        )))
+        cursor.execute(fmt_sql('INSERT INTO deaths (killer, corpse, external_id, kdr_count) '
+                               "VALUES (%s, %s, %s, %s)", 4),
+                       (killer, corpse, external_id, int(counts_for_kdr)))
         return True
     else:
         return False
@@ -148,14 +163,17 @@ def get_or_create_deathsight(db_connection, killer, corpse, external_id,
 
 def get_or_create_toon(db_connection, name):
     cursor = db_connection.cursor()
-    cursor.execute('SELECT c.city FROM characters c WHERE c.name = \'%s\';' % escape(name))
+    sql = fmt_sql("SELECT c.city FROM characters c WHERE c.name = %s;", 1)
+    cursor.execute(sql, (name,))
     try:
         return {'city': cursor.fetchall()[0][0]}
     except IndexError:
         data = get_toon_from_api(name)
-        cursor.execute('INSERT INTO characters (%s) VALUES (\'%s\')' %
-                       (', '.join(API_FIELDS),
-                        '\', \''.join(escape(data[field]) for field in API_FIELDS)))
+        cursor.execute(fmt_sql("INSERT INTO characters (%s) VALUES (%s)" % (
+                               ', '.join(API_FIELDS),
+                               ', '.join('%s' for field in API_FIELDS)),
+                               len(API_FIELDS)),
+                       [data[field] for field in API_FIELDS])
         return data
 
 
@@ -181,14 +199,14 @@ def show_death_history(corpse=None):
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         if corpse:
-            cursor.execute(('SELECT MIN(timestamp) FROM deaths '
-                            'WHERE corpse = \'%s\';' % corpse))
+            cursor.execute(fmt_sql('SELECT MIN(timestamp) FROM deaths '
+                                   "WHERE corpse = %s;", 1), (corpse,))
             try:
                 min_ts = cursor.fetchall()[0][0]
             except IndexError:
                 return
-            cursor.execute(('SELECT killer, COUNT(killer) FROM deaths '
-                            'WHERE corpse = \'%s\' GROUP BY killer' % corpse))
+            cursor.execute(fmt_sql('SELECT killer, COUNT(killer) FROM deaths '
+                                   "WHERE corpse = %s GROUP BY killer", 1), (corpse,))
             return {'since': min_ts, 'deaths': cursor.fetchall()}
         else:
             cursor.execute('SELECT MIN(timestamp) FROM deaths')
@@ -199,32 +217,6 @@ def show_death_history(corpse=None):
             cursor.execute('SELECT killer, corpse FROM deaths')
             return {'since': min_ts, 'deaths': cursor.fetchall()}
 
-
-def show_kdr(player, against=None):
-    with DBContextManager() as conn:
-        setup_db_if_blank(conn)
-        cursor = conn.cursor()
-        sql = 'SELECT count(corpse) FROM deaths WHERE kdr_count = 1 AND killer = \'%s\''
-        args = player.title()
-        if against:
-            sql += ' AND corpse = \'%s\''
-            args = (args, against.title())
-        cursor.execute(sql % args)
-        try:
-            kills = cursor.fetchall()[0][0]
-        except IndexError:
-            kills = 0
-
-        sql = 'SELECT count(killer) FROM deaths WHERE kdr_count = 1 AND corpse = \'%s\''
-        if against:
-            sql += ' AND killer = \'%s\''
-        cursor.execute(sql % args)
-        try:
-            deaths = cursor.fetchall()[0][0]
-        except IndexError:
-            deaths = 0
-
-        return kills, deaths
 
 def show_game_feed(types=('DEA', 'DUE'), update=False):
     url = '%s.json' % API_URL.replace('characters', 'gamefeed')
@@ -262,6 +254,39 @@ def show_game_feed(types=('DEA', 'DUE'), update=False):
         return deaths_added
 
 
+def show_kdr(player, against=None):
+    with DBContextManager() as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        sql = "SELECT count(corpse) FROM deaths WHERE kdr_count = 1 AND killer = %s"
+        args = [player.title()]
+        if against:
+            sql += " AND corpse = %s"
+            args.append(against.title())
+        cursor.execute(fmt_sql(sql, len(args)), args)
+        try:
+            kills = cursor.fetchall()[0][0]
+        except IndexError:
+            kills = 0
+
+        sql = "SELECT count(killer) FROM deaths WHERE kdr_count = 1 AND corpse = %s"
+        if against:
+            sql += " AND killer = %s"
+        cursor.execute(fmt_sql(sql, len(args)), args)
+        try:
+            deaths = cursor.fetchall()[0][0]
+        except IndexError:
+            deaths = 0
+
+        return kills, deaths
+
+
+def search_toon_archive(name):
+    with DBContextManager() as conn:
+        setup_db_if_blank(conn)
+        return get_or_create_toon(conn, name)
+
+
 def show_toon_archive():
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
@@ -270,10 +295,16 @@ def show_toon_archive():
         return cursor.fetchall()
 
 
-def search_toon_archive(name):
-    with DBContextManager() as conn:
-        setup_db_if_blank(conn)
-        return get_or_create_toon(conn, name)
+def update_toon(db_connection, name):
+    cursor = db_connection.cursor()
+    data = get_toon_from_api(name)
+    args = [name] + [data[field] for field in API_FIELDS]
+    sql = "UPDATE characters SET %s WHERE name = %%s" % (
+              ', '.join(("%s=%%s" % field
+                        for field in API_FIELDS)),)
+    sql = fmt_sql(sql, len(args))
+    cursor.execute(sql, args)
+    return data
 
 
 if __name__ == '__main__':
@@ -310,10 +341,11 @@ if __name__ == '__main__':
             print('%i Achaeans known.' % len(toon_archive))
         elif arg.lower() == 'deathhistory':
             death = None
-            for death in show_death_history()['deaths']:
+            data = show_death_history()
+            for death in data['deaths']:
                 print('%s killed %s.' % death[:2])
             if death:
-                print('(records since %s)' % death['since'])
+                print('(records since %s)' % data['since'])
             else:
                 print('No records found!')
         elif arg.lower() == 'gamefeed':

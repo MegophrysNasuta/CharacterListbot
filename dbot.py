@@ -165,7 +165,13 @@ async def on_message(message):
         poll_id = create_poll(matches['question'], message.author.id,
                               message.id, matches['stingy'])
         question = matches['question'].title().replace("'S", "'s")
-        msg.append('Poll %i:\n> %s\n\nAdd reacji to respond.' % (poll_id, question))
+
+        if matches['stingy']:
+            cta = 'Vote with the emoji on this post.'
+        else:
+            cta = 'Add emoji to the post to respond.'
+
+        msg.append('Poll %i:\n> %s\n\n%s' % (poll_id, question, cta))
     elif content.startswith('!pollreport'):
         try:
             _, poll_id = content.split(None, 1)

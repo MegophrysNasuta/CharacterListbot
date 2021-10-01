@@ -60,7 +60,7 @@ async def on_reaction_add(reaction, user):
     if reaction.message.author != client.user:
         return
 
-    def set_pollopt():
+    async def set_pollopt():
         args = create_pollopt(matches['poll_id'], reaction.name, reaction.name)
         msg = 'Poll option %i for poll %i is :%s: (%s)'
         args.extend([reaction.name, reaction.name])

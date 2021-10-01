@@ -193,6 +193,16 @@ def get_or_create_toon(db_connection, name):
         return data
 
 
+
+
+def get_poll_owner(poll_id):
+    with DBContextManager() as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        cursor.execute('SELECT owner FROM polls WHERE id = %s', (poll_id,))
+        return cursor.fetchone()[0]
+
+
 def get_poll_report(poll_id, message):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)

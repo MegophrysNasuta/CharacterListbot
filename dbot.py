@@ -66,7 +66,7 @@ async def on_reaction_add(reaction, user):
         args.extend([reaction.name, reaction.name])
         await reaction.message.channel.send(msg % args)
 
-    matches = POLL_OPEN_REGEX.matches(reaction.message.content)
+    matches = POLL_OPEN_REGEX.match(reaction.message.content)
     if matches and reaction.count == 1:
         if is_poll_locked(matches['poll_id']):
             if user == get_poll_owner(matches['poll_id']):
@@ -164,7 +164,8 @@ async def on_message(message):
         matches = POLL_REGEX.match(content)
         poll_id = create_poll(matches['question'], message.author.id,
                               message.id, matches['stingy'])
-        msg.append('Poll %i:\n> %s\n\nAdd reacji to respond.' % (poll_id, matches['question'].title()))
+        question = matches['question'].title().replace("'S", "'s")
+        msg.append('Poll %i:\n> %s\n\nAdd reacji to respond.' % (poll_id, question))
     elif content.startswith('!pollreport'):
         try:
             _, poll_id = content.split(None, 1)

@@ -46,6 +46,7 @@ def to_num(n):
 def fmt_sql(sql, n):
     if DB_TYPE == 'sqlite':
         return sql % tuple('?' for _ in range(n))
+    return sql
 
 
 def get_toon_from_api(name):

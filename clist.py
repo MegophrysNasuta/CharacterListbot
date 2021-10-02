@@ -258,7 +258,7 @@ def set_pollopt_meaning(pollopt_id, meaning):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
-        cursor.execute(('UPDATE pollopts SET meaning = $s '
+        cursor.execute(('UPDATE pollopts SET meaning = %s '
                         'WHERE id = %s'), (meaning, pollopt_id))
 
 

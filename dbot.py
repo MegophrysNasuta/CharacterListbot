@@ -83,6 +83,16 @@ async def on_reaction_add(reaction, user):
 
 
 @client.event
+async def on_reaction_remove(reaction, user):
+    if reaction.message.author != client.user:
+        return
+
+    matches = POLL_OPEN_REGEX.match(reaction.message.content)
+    if matches:
+        adjust_pollopt_vote(reaction.emoji, reaction.count)
+
+
+@client.event
 async def on_message(message):
     if message.author == client.user:
         return

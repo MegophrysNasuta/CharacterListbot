@@ -220,10 +220,10 @@ def get_poll_report(poll_id, message):
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         cursor.execute('SELECT message_id, question, owner FROM polls WHERE id = %s', (poll_id,))
-        try:
-            message_id, question, owner = cursor.fetchone()
-        except TypeError:
+        result = cursor.fetchone()
+        if result is None:
             return ('Poll %i not found.' % poll_id,)
+        message_id, question, owner = result
         report_msg = ['Poll %i posted by <@%s>' % (poll_id, owner),
                       '> %s' % question.title().replace("'S", "'s"), '']
         cursor.execute(('SELECT emoji, meaning, votes FROM pollopts '

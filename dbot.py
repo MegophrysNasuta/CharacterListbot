@@ -65,7 +65,7 @@ async def on_reaction_add(reaction, user):
         emoji = reaction.emoji
         args = create_pollopt(matches['poll_id'], emoji, emoji)
         msg = 'Poll option %i for poll %i is :%s: (%s)'
-        args.extend([reaction.name, reaction.name])
+        list(args).extend([reaction.name, reaction.name])
         await reaction.message.channel.send(msg % args)
 
     matches = POLL_OPEN_REGEX.match(reaction.message.content)

@@ -224,8 +224,8 @@ def get_poll_report(poll_id, message):
                       '> %s' % question.title().replace("'S", "'s"), '']
         cursor.execute('SELECT emoji, meaning, votes FROM pollopts WHERE poll = %s',
                        (poll_id,))
-        for opt in cursor.fetchall():
-            report_msg.append('%s (%s): %i' % (opt.emoji, opt.meaning, opt.votes))
+        for emoji, meaning, votes in cursor.fetchall():
+            report_msg.append('%s (%s): %i' % (emoji, meaning, votes))
         return report_msg
 
 

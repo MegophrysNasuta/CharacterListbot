@@ -181,7 +181,7 @@ async def on_message(message):
             msg.append("That's not a poll. You made that up.")
         else:
             report = await get_poll_report(poll_id, message)
-            msg.extend(report)
+            msg.append('\n'.join(report))
     elif REMINDER_REGEX.match(content):
         matches = REMINDER_REGEX.match(content)
         try:

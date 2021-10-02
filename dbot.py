@@ -63,7 +63,7 @@ async def on_reaction_add(reaction, user):
 
     async def set_pollopt(with_vote=False):
         emoji = reaction.emoji
-        args = create_pollopt(matches['poll_id'], emoji, emoji, with_vote)
+        args = create_pollopt(matches['poll_id'], emoji, emoji, user, with_vote)
         msg = 'Poll option %i belonging to  poll %i is now %s'
         await reaction.message.channel.send(msg % (args + (emoji,)))
 
@@ -179,8 +179,12 @@ async def on_message(message):
         msg.append('Poll %i:\n> %s\n\n%s' % (poll_id, question, cta))
     elif SET_POLLOPT_REGEX.match(content):
         matches = SET_POLLOPT_REGEX.match(content)
-        set_pollopt_meaning(matches['pollopt_id'], matches['meaning'])
-        msg.append('Poll option %(pollopt_id)s defined to be "%(meaning)s".' % matches)
+        ok = set_pollopt_meaning(matches['pollopt_id'], matches['meaning'],
+                                 message.author.id)
+        if ok:
+            msg.append('Poll option %(pollopt_id)s defined to be "%(meaning)s".' % matches)
+        else:
+            msg.append('No.')
     elif content.startswith('!pollreport'):
         try:
             _, poll_id = content.split(None, 1)

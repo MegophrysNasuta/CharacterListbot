@@ -108,6 +108,7 @@ def setup_db_if_blank(db_connection):
                                          poll %(int)s%(inline_fk)s,
                                          emoji %(text)s,
                                          meaning %(text)s,
+                                         owner %(text)s,
                                          votes %(int)s,
                                          UNIQUE (poll, emoji, meaning)%(outro_fk)s);
     """
@@ -161,14 +162,14 @@ def create_poll(question, owner, message_id, locked=False):
         return cursor.fetchone()[0]
 
 
-def create_pollopt(poll_id, emoji, meaning, add_vote=False):
+def create_pollopt(poll_id, emoji, meaning, owner, add_vote=False):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
-        sql = ("INSERT INTO pollopts (poll, emoji, meaning, votes) "
-               "VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING "
+        sql = ("INSERT INTO pollopts (poll, emoji, meaning, owner, votes) "
+               "VALUES (%s, %s, %s, %s, %s) ON CONFLICT DO NOTHING "
                "RETURNING id, poll")
-        cursor.execute(sql, (poll_id, emoji, meaning, int(bool(add_vote))))
+        cursor.execute(sql, (poll_id, emoji, meaning, owner, int(bool(add_vote))))
         return cursor.fetchone()
 
 
@@ -258,12 +259,14 @@ def list_toons(update=False, quick=False):
     return toon_list
 
 
-def set_pollopt_meaning(pollopt_id, meaning):
+def set_pollopt_meaning(pollopt_id, meaning, requester_id):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         cursor.execute(('UPDATE pollopts SET meaning = %s '
-                        'WHERE id = %s'), (meaning, pollopt_id))
+                        'WHERE id = %s AND owner = %s'),
+                       (meaning, pollopt_id, requester_id))
+        return cursor.fetchone()
 
 
 def show_death_history(corpse=None):

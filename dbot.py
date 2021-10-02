@@ -60,22 +60,25 @@ async def on_reaction_add(reaction, user):
     if reaction.message.author != client.user:
         return
 
-    async def set_pollopt():
+    async def set_pollopt(with_vote=False):
         emoji = reaction.emoji
-        args = create_pollopt(matches['poll_id'], emoji, emoji)
+        args = create_pollopt(matches['poll_id'], emoji, emoji, with_vote)
         msg = 'Poll option %i belonging to  poll %i is now %s'
         await reaction.message.channel.send(msg % (args + (emoji,)))
 
     matches = POLL_OPEN_REGEX.match(reaction.message.content)
-    if matches and reaction.count == 1:
-        if is_poll_locked(matches['poll_id']):
-            poll_owner = get_poll_owner(matches['poll_id'])
-            if str(user.id) == poll_owner:
-                await set_pollopt()
+    if matches:
+        if reaction.count == 1:
+            if is_poll_locked(matches['poll_id']):
+                poll_owner = get_poll_owner(matches['poll_id'])
+                if str(user.id) == poll_owner:
+                    await set_pollopt()
+                else:
+                    reaction.remove(user)
             else:
-                reaction.remove(user)
+                await set_pollopt(with_vote=True)
         else:
-            await set_pollopt()
+            adjust_pollopt_vote(reaction.emoji, reaction.count)
 
 
 @client.event

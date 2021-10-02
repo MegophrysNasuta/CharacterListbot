@@ -108,12 +108,22 @@ def setup_db_if_blank(db_connection):
                                          poll %(int)s%(inline_fk)s,
                                          emoji %(text)s,
                                          meaning %(text)s,
+                                         votes %(int)s,
                                          UNIQUE (poll, emoji, meaning)%(outro_fk)s);
     """
     arg = db[DB_TYPE]
     arg['inline_fk'] = ' REFERENCES polls(id)' if DB_TYPE == 'postgres' else ''
     arg['outro_fk'] = ',\nFOREIGN KEY(poll) REFERENCES polls(id)' if DB_TYPE == 'sqlite' else ''
     db_connection.cursor().execute(sql % arg)
+
+
+def adjust_pollopt_vote(emoji, vote_count):
+    with DBContextManager() as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        print('%s now has %i votes.' % (emoji, vote_count))
+        sql = "UPDATE pollopts SET votes = %s WHERE emoji = %s"
+        cursor.execute(sql, (int(vote_count), emoji))
 
 
 def check_for_updates(since):
@@ -151,13 +161,14 @@ def create_poll(question, owner, message_id, locked=False):
         return cursor.fetchone()[0]
 
 
-def create_pollopt(poll_id, emoji, meaning):
+def create_pollopt(poll_id, emoji, meaning, add_vote=False):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
-        sql = ("INSERT INTO pollopts (poll, emoji, meaning) VALUES (%s, %s, %s) "
-               "ON CONFLICT DO NOTHING RETURNING id, poll")
-        cursor.execute(sql, (poll_id, emoji, meaning))
+        sql = ("INSERT INTO pollopts (poll, emoji, meaning, votes) "
+               "VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING "
+               "RETURNING id, poll")
+        cursor.execute(sql, (poll_id, emoji, meaning, int(bool(add_vote))))
         return cursor.fetchone()
 
 
@@ -203,20 +214,18 @@ def get_poll_owner(poll_id):
         return cursor.fetchone()[0]
 
 
-async def get_poll_report(poll_id, message):
+def get_poll_report(poll_id, message):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         cursor.execute('SELECT message_id, question, owner FROM polls WHERE id = %s', (poll_id,))
         message_id, question, owner = cursor.fetchone()
-        poll_msg = await message.channel.fetch_message(message_id)
         report_msg = ['Poll %i posted by <@%s>' % (poll_id, owner),
                       '> %s' % question.title().replace("'S", "'s"), '']
-        for reaction in poll_msg.reactions:
-            cursor.execute(('SELECT meaning FROM pollopts WHERE '
-                            'poll = %s AND emoji = %s'), (poll_id, reaction.emoji))
-            meaning = cursor.fetchone()[0]
-            report_msg.append('%s (%s): %i' % (reaction.emoji, meaning, len(reaction.users)))
+        cursor.execute('SELECT emoji, meaning, votes FROM pollopts WHERE poll = %s',
+                       (poll_id,))
+        for opt in cursor.fetchall():
+            report_msg.append('%s (%s): %i' % (opt.emoji, opt.meaning, opt.votes))
         return report_msg
 
 

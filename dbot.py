@@ -70,20 +70,13 @@ async def on_reaction_add(reaction, user):
     matches = POLL_OPEN_REGEX.match(reaction.message.content)
     if matches and reaction.count == 1:
         if is_poll_locked(matches['poll_id']):
-            print('Poll is stingy')
-            print(user.id)
             poll_owner = get_poll_owner(matches['poll_id'])
-            print(poll_owner)
-            if user.id == poll_owner:
+            if str(user.id) == poll_owner:
                 set_pollopt()
             else:
-                print('Removing reaction')
-                reaction.remove()
+                reaction.remove(user)
         else:
-            print('Poll is normal')
             set_pollopt()
-    else:
-        print('This is not the first reaction')
 
 
 @client.event

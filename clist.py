@@ -264,7 +264,8 @@ def set_pollopt_meaning(pollopt_id, meaning, requester_id):
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         cursor.execute(('UPDATE pollopts SET meaning = %s '
-                        'WHERE id = %s AND owner = %s'),
+                        'WHERE id = %s AND owner = %s '
+                        'RETURNING id'),
                        (meaning, pollopt_id, str(requester_id)))
         return cursor.fetchone()
 

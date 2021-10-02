@@ -3,6 +3,7 @@ import ast
 from collections import defaultdict
 import operator as op
 import os
+import logging
 import random
 import re
 import string
@@ -61,6 +62,7 @@ async def on_reaction_add(reaction, user):
         return
 
     async def set_pollopt():
+        logging.critical('Setting poll option')
         args = create_pollopt(matches['poll_id'], reaction.name, reaction.name)
         msg = 'Poll option %i for poll %i is :%s: (%s)'
         args.extend([reaction.name, reaction.name])
@@ -69,12 +71,17 @@ async def on_reaction_add(reaction, user):
     matches = POLL_OPEN_REGEX.match(reaction.message.content)
     if matches and reaction.count == 1:
         if is_poll_locked(matches['poll_id']):
+            logging.critical('Poll is stingy')
             if user.id == get_poll_owner(matches['poll_id']):
                 set_pollopt()
             else:
+                logging.critical('Removing reaction')
                 reaction.remove()
         else:
+            logging.critical('Poll is normal')
             set_pollopt()
+    else:
+        logging.critical('This is not the first reaction')
 
 
 @client.event

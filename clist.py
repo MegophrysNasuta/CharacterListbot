@@ -254,6 +254,14 @@ def list_toons(update=False, quick=False):
     return toon_list
 
 
+def set_pollopt_meaning(pollopt_id, meaning):
+    with DBContextManager() as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        cursor.execute(('UPDATE pollopts SET meaning = $s '
+                        'WHERE id = %s'), (meaning, pollopt_id))
+
+
 def show_death_history(corpse=None):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)

@@ -17,6 +17,7 @@ from clist import *
 client = discord.Client()
 
 
+SET_POLLOPT_REGEX = re.compile('\!setpollopt (?P<pollopt_id>\d+) (?P<meaning>.*)')
 POLL_REGEX = re.compile('\!poll(?P<stingy> stingy)? (?P<question>.*)')
 POLL_OPEN_REGEX = re.compile('^Poll (?P<poll_id>\d+)')
 REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
@@ -176,6 +177,10 @@ async def on_message(message):
             cta = 'Add emoji to the post to respond.'
 
         msg.append('Poll %i:\n> %s\n\n%s' % (poll_id, question, cta))
+    elif SET_POLLOPT_REGEX.match(content):
+        matches = SET_POLLOPT_REGEX.match(content)
+        set_pollopt_meaning(matches['pollopt_id'], matches['meaning'])
+        msg.append('Poll option %(pollopt_id)i defined to be "%(meaning)s".' % matches)
     elif content.startswith('!pollreport'):
         try:
             _, poll_id = content.split(None, 1)

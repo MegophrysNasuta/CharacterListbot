@@ -214,9 +214,9 @@ async def get_poll_report(poll_id, message):
                       '> %s' % question.title().replace("'S", "'s"), '']
         for reaction in poll_msg.reactions:
             cursor.execute(('SELECT meaning FROM pollopts WHERE '
-                            'poll = %s AND emoji = %s'), (poll_id, reaction.emoji.name))
+                            'poll = %s AND emoji = %s'), (poll_id, reaction.emoji))
             meaning = cursor.fetchone()[0]
-            report_msg.append('%s (%s): %i' % (reaction.emoji.name, meaning, len(reaction.users)))
+            report_msg.append('%s (%s): %i' % (reaction.emoji, meaning, len(reaction.users)))
         return report_msg
 
 

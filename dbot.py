@@ -62,7 +62,7 @@ async def on_reaction_add(reaction, user):
 
     async def set_pollopt():
         print('Setting poll option')
-        emoji = reaction.emoji.name
+        emoji = reaction.emoji
         args = create_pollopt(matches['poll_id'], emoji, emoji)
         msg = 'Poll option %i for poll %i is :%s: (%s)'
         args.extend([reaction.name, reaction.name])

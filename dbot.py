@@ -72,11 +72,11 @@ async def on_reaction_add(reaction, user):
         if is_poll_locked(matches['poll_id']):
             poll_owner = get_poll_owner(matches['poll_id'])
             if str(user.id) == poll_owner:
-                set_pollopt()
+                await set_pollopt()
             else:
                 reaction.remove(user)
         else:
-            set_pollopt()
+            await set_pollopt()
 
 
 @client.event

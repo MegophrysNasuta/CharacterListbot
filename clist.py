@@ -122,6 +122,7 @@ def adjust_pollopt_vote(emoji, vote_count):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
+        emoji = str(emoji) if emoji.is_unicode_emoji() else str(emoji.id)
         print('%s now has %i votes.' % (emoji, vote_count))
         sql = "UPDATE pollopts SET votes = %s WHERE emoji = %s"
         cursor.execute(sql, (int(vote_count), emoji))

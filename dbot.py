@@ -180,7 +180,8 @@ async def on_message(message):
         except ValueError:
             msg.append("That's not a poll. You made that up.")
         else:
-            msg.extend(get_poll_report(poll_id, message))
+            report = await get_poll_report(poll_id, message)
+            msg.extend(report)
     elif REMINDER_REGEX.match(content):
         matches = REMINDER_REGEX.match(content)
         try:

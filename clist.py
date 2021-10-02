@@ -283,7 +283,7 @@ def show_death_history(corpse=None, killer=None):
             except IndexError:
                 return
             cursor.execute(fmt_sql('SELECT killer, COUNT(killer) AS count FROM deaths '
-                                   "WHERE corpse = %s GROUP BY killer ORDER BY count", 1),
+                                   "WHERE corpse = %s GROUP BY killer ORDER BY count DESC", 1),
                            (corpse,))
             return {'since': min_ts, 'deaths': cursor.fetchall()}
         elif killer:
@@ -294,7 +294,7 @@ def show_death_history(corpse=None, killer=None):
             except IndexError:
                 return
             cursor.execute(fmt_sql('SELECT corpse, COUNT(corpse) AS count FROM deaths '
-                                   "WHERE killer = %s GROUP BY corpse ORDER BY count", 1),
+                                   "WHERE killer = %s GROUP BY corpse ORDER BY count DESC", 1),
                            (killer,))
             return {'since': min_ts, 'kills': cursor.fetchall()}
         else:

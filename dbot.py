@@ -58,6 +58,9 @@ async def on_ready():
 
 @client.event
 async def on_reaction_add(reaction, user):
+    logging.critical('Author, user')
+    logging.critical(reaction.message.author)
+    logging.critical(client.user)
     if reaction.message.author != client.user:
         return
 

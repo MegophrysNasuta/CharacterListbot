@@ -209,14 +209,14 @@ def get_poll_report(poll_id, message):
         cursor = conn.cursor()
         cursor.execute('SELECT message_id, question, owner FROM polls WHERE id = %s', (poll_id,))
         message_id, question, owner = cursor.fetchone()
-        poll_msg = message.channel.fetch_message(message_id)
+        poll_msg = await message.channel.fetch_message(message_id)
         report_msg = ['Poll %i posted by <@%s>' % (poll_id, owner),
                       '> %s' % question.title().replace("'S", "'s"), '']
         for reaction in poll_msg.reactions:
             cursor.execute(('SELECT meaning FROM pollopts WHERE '
-                            'poll = %s AND emoji = %s'), (poll_id, reaction.name))
+                            'poll = %s AND emoji = %s'), (poll_id, reaction.emoji.name))
             meaning = cursor.fetchone()[0]
-            report_msg.append('%s (%s): %i' % (reaction.name, meaning, len(reaction.users)))
+            report_msg.append('%s (%s): %i' % (reaction.emoji.name, meaning, len(reaction.users)))
         return report_msg
 
 

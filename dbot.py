@@ -57,9 +57,6 @@ async def on_ready():
 
 @client.event
 async def on_reaction_add(reaction, user):
-    print('Author, user')
-    print(reaction.message.author)
-    print(client.user)
     if reaction.message.author != client.user:
         return
 
@@ -74,7 +71,10 @@ async def on_reaction_add(reaction, user):
     if matches and reaction.count == 1:
         if is_poll_locked(matches['poll_id']):
             print('Poll is stingy')
-            if user.id == get_poll_owner(matches['poll_id']):
+            print(user.id)
+            poll_owner = get_poll_owner(matches['poll_id'])
+            print(poll_owner)
+            if user.id == poll_owner:
                 set_pollopt()
             else:
                 print('Removing reaction')

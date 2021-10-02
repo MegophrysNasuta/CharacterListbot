@@ -222,10 +222,11 @@ def get_poll_report(poll_id, message):
         message_id, question, owner = cursor.fetchone()
         report_msg = ['Poll %i posted by <@%s>' % (poll_id, owner),
                       '> %s' % question.title().replace("'S", "'s"), '']
-        cursor.execute('SELECT emoji, meaning, votes FROM pollopts WHERE poll = %s',
+        cursor.execute(('SELECT emoji, meaning, votes FROM pollopts '
+                        'WHERE poll = %s ORDER BY votes DESC'),
                        (poll_id,))
         for emoji, meaning, votes in cursor.fetchall():
-            report_msg.append('%s (%s): %i' % (emoji, meaning, votes))
+            report_msg.append('%s (%s):\n\t%s' % (emoji, meaning, '#' * int(votes)))
         return report_msg
 
 

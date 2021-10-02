@@ -169,6 +169,7 @@ def create_pollopt(poll_id, emoji, meaning, owner, add_vote=False):
         sql = ("INSERT INTO pollopts (poll, emoji, meaning, owner, votes) "
                "VALUES (%s, %s, %s, %s, %s) ON CONFLICT DO NOTHING "
                "RETURNING id, poll")
+        emoji = str(emoji) if emoji.is_unicode_emoji() else str(emoji.id)
         cursor.execute(sql, (poll_id, emoji, meaning, owner, int(bool(add_vote))))
         return cursor.fetchone()
 
@@ -270,7 +271,7 @@ def set_pollopt_meaning(pollopt_id, meaning, requester_id):
         return cursor.fetchone()
 
 
-def show_death_history(corpse=None):
+def show_death_history(corpse=None, killer=None):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
@@ -281,9 +282,21 @@ def show_death_history(corpse=None):
                 min_ts = cursor.fetchall()[0][0]
             except IndexError:
                 return
-            cursor.execute(fmt_sql('SELECT killer, COUNT(killer) FROM deaths '
-                                   "WHERE corpse = %s GROUP BY killer", 1), (corpse,))
+            cursor.execute(fmt_sql('SELECT killer, COUNT(killer) AS count FROM deaths '
+                                   "WHERE corpse = %s GROUP BY killer ORDER BY count", 1),
+                           (corpse,))
             return {'since': min_ts, 'deaths': cursor.fetchall()}
+        elif killer:
+            cursor.execute(fmt_sql('SELECT MIN(timestamp) FROM deaths '
+                                   "WHERE killer = %s;", 1), (killer,))
+            try:
+                min_ts = cursor.fetchall()[0][0]
+            except IndexError:
+                return
+            cursor.execute(fmt_sql('SELECT corpse, COUNT(corpse) AS count FROM deaths '
+                                   "WHERE killer = %s GROUP BY corpse ORDER BY count", 1),
+                           (killer,))
+            return {'since': min_ts, 'kills': cursor.fetchall()}
         else:
             cursor.execute('SELECT MIN(timestamp) FROM deaths')
             try:

@@ -255,6 +255,22 @@ async def on_message(message):
                     rpt_line %= (player.title(), kills, deaths, kdr)
 
             msg.append(rpt_line)
+    elif content.startswith('!killsights'):
+        try:
+            _, player = content.split(None, 1)
+        except ValueError:
+            msg.append('You have to tell me who you want to see kills for.')
+        else:
+            player = player.title()
+            result = show_death_history(killer=player)
+            if result['since'] is not None:
+                msg.append(('Since %s, the following kills have been '
+                            'recorded for %s:' % (result['since'], player)))
+                msg.append('')
+                for row in result['kills']:
+                    msg.append('Killed %s: %i' % row[:2])
+            else:
+                msg.append('No kills recorded for %s.' % player)
     elif content.startswith('!who') or content.startswith('!online'):
         toons = list_toons()
         total = 0

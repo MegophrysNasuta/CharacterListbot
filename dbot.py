@@ -63,7 +63,7 @@ async def on_reaction_add(reaction, user):
 
     async def set_pollopt(with_vote=False):
         emoji = reaction.emoji
-        args = create_pollopt(matches['poll_id'], emoji, emoji, user, with_vote)
+        args = create_pollopt(matches['poll_id'], emoji, emoji, user.id, with_vote)
         msg = 'Poll option %i belonging to  poll %i is now %s'
         await reaction.message.channel.send(msg % (args + (emoji,)))
 

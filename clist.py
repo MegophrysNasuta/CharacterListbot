@@ -203,7 +203,7 @@ def get_poll_owner(poll_id):
         return cursor.fetchone()[0]
 
 
-def get_poll_report(poll_id, message):
+async def get_poll_report(poll_id, message):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()

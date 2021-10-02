@@ -180,7 +180,7 @@ async def on_message(message):
     elif SET_POLLOPT_REGEX.match(content):
         matches = SET_POLLOPT_REGEX.match(content)
         set_pollopt_meaning(matches['pollopt_id'], matches['meaning'])
-        msg.append('Poll option %(pollopt_id)i defined to be "%(meaning)s".' % matches)
+        msg.append('Poll option %(pollopt_id)s defined to be "%(meaning)s".' % matches)
     elif content.startswith('!pollreport'):
         try:
             _, poll_id = content.split(None, 1)

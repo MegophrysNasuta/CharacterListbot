@@ -156,7 +156,7 @@ def create_pollopt(poll_id, emoji, meaning):
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         sql = ("INSERT INTO pollopts (poll, emoji, meaning) VALUES (%s, %s, %s) "
-               "RETURNING id, poll ON CONFLICT DO NOTHING")
+               "ON CONFLICT DO NOTHING RETURNING id, poll")
         cursor.execute(sql, (poll_id, emoji, meaning))
         return cursor.fetchone()
 

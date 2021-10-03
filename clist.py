@@ -289,14 +289,16 @@ def show_death_history(corpse=None, killer=None):
             return {'since': min_ts, 'deaths': cursor.fetchall()}
         elif killer:
             cursor.execute(fmt_sql('SELECT MIN(timestamp) FROM deaths '
-                                   "WHERE killer = %s;", 1), (killer,))
+                                   "WHERE lower(killer) = %s;", 1),
+                           (killer.lower(),))
             try:
                 min_ts = cursor.fetchall()[0][0]
             except IndexError:
                 return
-            cursor.execute(fmt_sql('SELECT corpse, COUNT(corpse) AS count FROM deaths '
-                                   "WHERE killer = %s GROUP BY corpse ORDER BY count DESC", 1),
-                           (killer,))
+            cursor.execute(fmt_sql("SELECT corpse, COUNT(corpse) AS count FROM deaths "
+                                   "WHERE lower(killer) = %s GROUP BY corpse "
+                                   "ORDER BY count DESC", 1),
+                           (killer.lower(),))
             return {'since': min_ts, 'kills': cursor.fetchall()}
         else:
             cursor.execute('SELECT MIN(timestamp) FROM deaths')

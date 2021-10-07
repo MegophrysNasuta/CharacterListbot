@@ -51,6 +51,16 @@ def eval_expr(expr):
     return eval_(ast.parse(expr, mode='eval').body)
 
 
+def stUdLYcApS(s):
+    result = []
+    for char in s:
+        if random.randint(1, 2) % 2 == 0:
+            result.append(char.upper())
+        else:
+            result.append(char.lower())
+    return ''.join(result)
+
+
 @client.event
 async def on_ready():
     print('Ready!')
@@ -101,6 +111,7 @@ async def on_message(message):
     content = message.content.lower()
     if content.startswith('!honours'):
         taunt_the_uk = (
+            stUdLYcApS(content),
             'TEAM AMERICA, F**K YEAH! :flag_us::flag_us::flag_us:',
             'Is this Romaen??',
             "IT'S HONORS, BABY!! WOOOOO!!!! *\*fires machine gun into air\**",
@@ -112,6 +123,9 @@ async def on_message(message):
 :flag_gb:      :flag_gb: :flag_gb:       :flag_gb:          :flag_gb:
 :flag_gb:                    :flag_gb:           :flag_gb: :flag_gb:
             """,
+            "https://media.giphy.com/media/9uIwMPlSoEr8NOwUdu/giphy.gif",
+            "https://media.giphy.com/media/443jI3kpgOKfAfKxqo/giphy.gif",
+            "https://media.giphy.com/media/DpYzl5716vg52/giphy.gif",
             "https://media.giphy.com/media/j0GW2I35KnU5e5BT7L/giphy.gif?cid=ecf05e47vnq3lhoqsc1ut9x06y1tvnqh07yi3qfesdxenz5k&rid=giphy.gif&ct=g",
             "https://media.giphy.com/media/ZdxLZAMhQcaKbIGdug/giphy.gif?cid=ecf05e47dyuhhicefn0p2nak6v5dtia4i73jovj93sbnjp0g&rid=giphy.gif&ct=g",
             "https://media.giphy.com/media/NaA840F7VJSHS/giphy.gif?cid=ecf05e47h7sot76tf80g7mss1pj5ru8bpywo8rfr0ltxdc20&rid=giphy.gif&ct=g",

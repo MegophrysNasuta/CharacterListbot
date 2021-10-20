@@ -132,6 +132,31 @@ async def on_message(message):
             "https://media.giphy.com/media/deSTGRBAr6TdkVEjCd/giphy.gif?cid=ecf05e478zcb8s57d8lxbjhm3pje0ixh0tmcr1sr2eet35mj&rid=giphy.gif&ct=g",
         )
         msg.append(random.choice(taunt_the_uk))
+    elif message.mentions.has(client.user.id) and '?' in content:
+        magic_8ballisms = (
+            'It is certain.',
+            'It is decidedly so.',
+            'Without a doubt.',
+            'Yes, definitely.',
+            'You may rely on it.',
+            'As I see it, yes.',
+            'Most likely.',
+            'Outlook: Good.',
+            'Yes.',
+            'Signs point to yes.',
+            'Reply hazy; try again later.',
+            'Ask again later.',
+            'Better not tell you now...',
+            'Cannot predict now.',
+            'Concentrate, then ask again.',
+            "Don't count on it.",
+            'My reply is no.',
+            'My sources say no.',
+            'Outlook: Not so good.',
+            'Very doubtful.',
+            '[x] Doubt.',
+        )
+        msg.append('Magic 8-Ball says: "%s"' % random.choice(magic_8ballisms))
     elif content.startswith('!pet cossi'):
         msg.append('*rubs up against <@%s>\'s leg*' % message.author.id)
     elif content.startswith('!math'):

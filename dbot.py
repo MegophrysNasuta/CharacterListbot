@@ -184,36 +184,39 @@ async def on_message(message):
             print('Error: ', str(e), file=sys.stderr)
             raise
         else:
-            try:
-                data = search_toon_archive(name)
-            except CharacterNotFound:
-                msg.append('"%s" is not real. You made that up.' % name.title())
+            if name == 'namino':
+                msg.append('https://www.collinsdictionary.com/images/thumb/bush_132902558_250.jpg?version=4.0.187')
             else:
-                fullname = data.pop('fullname')
-                msg.extend([fullname, '=' * len(fullname)])
-                msg.append(
-                    'Level {level} {cls} in House {house} in {city}.'.format(
-                        level=data.pop('level'),
-                        cls=data.pop('class').title(),
-                        house=data.pop('house').title(),
-                        city=data.pop('city').title(),
+                try:
+                    data = search_toon_archive(name)
+                except CharacterNotFound:
+                    msg.append('"%s" is not real. You made that up.' % name.title())
+                else:
+                    fullname = data.pop('fullname')
+                    msg.extend([fullname, '=' * len(fullname)])
+                    msg.append(
+                        'Level {level} {cls} in House {house} in {city}.'.format(
+                            level=data.pop('level'),
+                            cls=data.pop('class').title(),
+                            house=data.pop('house').title(),
+                            city=data.pop('city').title(),
+                        )
                     )
-                )
-                msg.append(
-                    ('{name} has killed {d:,d} denizens and '
-                     '{a:,d} adventurers.').format(
-                        name=name.title(),
-                        d=to_num(data.pop('mob_kills')),
-                        a=to_num(data.pop('player_kills')),
+                    msg.append(
+                        ('{name} has killed {d:,d} denizens and '
+                         '{a:,d} adventurers.').format(
+                            name=name.title(),
+                            d=to_num(data.pop('mob_kills')),
+                            a=to_num(data.pop('player_kills')),
+                        )
                     )
-                )
-                msg.append(
-                    '{name} is Explorer Rank {e:,d} and XP Rank {x:,d}.'.format(
-                        name=name.title(),
-                        e=int(data.pop('explorer_rank')),
-                        x=int(data.pop('xp_rank')),
+                    msg.append(
+                        '{name} is Explorer Rank {e:,d} and XP Rank {x:,d}.'.format(
+                            name=name.title(),
+                            e=int(data.pop('explorer_rank')),
+                            x=int(data.pop('xp_rank')),
+                        )
                     )
-                )
     elif POLL_REGEX.match(content):
         matches = POLL_REGEX.match(content)
         poll_id = create_poll(matches['question'], message.author.id,

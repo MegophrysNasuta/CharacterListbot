@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 from collections import defaultdict
-from datetime import datetime
+from datetime import date, datetime, timedelta
 import itertools
 import json
 from os import environ as env
@@ -309,6 +309,19 @@ def show_death_history(corpse=None, killer=None):
             return {'since': min_ts, 'deaths': cursor.fetchall()}
 
 
+def expunge_old_data():
+    with DBContextManager() as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM characters AS c "
+                       "WHERE EXISTS (SELECT c_.name FROM characters AS c_ "
+                       "              WHERE c_.name = c.name AND "
+                       "              c_.id <> c.id);")
+        nine_days_ago = (date.today() - timedelta(days=9)).isoformat()
+        cursor.execute("DELETE FROM deaths AS d "
+                       "WHERE d.timestamp < '%s'" % nine_days_ago)
+
+
 def show_game_feed(types=('DEA', 'DUE'), update=False):
     url = '%s.json' % API_URL.replace('characters', 'gamefeed')
     data = requests.get(url).json()
@@ -342,6 +355,8 @@ def show_game_feed(types=('DEA', 'DUE'), update=False):
                                             killer=killer, corpse=corpse,
                                             counts_for_kdr=counts_for_kdr):
                     deaths_added += 1
+
+        expunge_old_data()
         return deaths_added
 
 

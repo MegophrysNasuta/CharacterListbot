@@ -193,7 +193,8 @@ def get_or_create_deathsight(db_connection, killer, corpse, external_id,
 
 def get_or_create_toon(db_connection, name):
     cursor = db_connection.cursor()
-    sql = fmt_sql("SELECT c.city FROM characters c WHERE c.name = %s;", 1)
+    sql = fmt_sql(("SELECT c.city FROM characters c "
+                   "WHERE c.name = %s ORDER BY c.id DESC;"), 1)
     cursor.execute(sql, (name,))
     try:
         return {'city': cursor.fetchall()[0][0]}
@@ -205,8 +206,6 @@ def get_or_create_toon(db_connection, name):
                                len(API_FIELDS)),
                        [data[field] for field in API_FIELDS])
         return data
-
-
 
 
 def get_poll_owner(poll_id):

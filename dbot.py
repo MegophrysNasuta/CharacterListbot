@@ -360,7 +360,7 @@ async def on_message(message):
         if len(msg) == 1:
             await message.channel.send(msg[0])
         else:
-            await message.channel.send('```%s```' % '\n'.join(msg))
+            await message.channel.send('```\n%s\n```' % '\n'.join(msg))
 
 
 if __name__ == '__main__':

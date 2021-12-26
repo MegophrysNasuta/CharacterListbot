@@ -157,6 +157,25 @@ async def on_message(message):
             '[x] Doubt.',
         )
         msg.append('Magic 8-Ball says: "%s"' % random.choice(magic_8ballisms))
+    elif content.startswith('!bingbong'):
+        coney_islandisms = (
+            '**FK YA LIFE! BING BONG!**',
+            'Real, son, we keep it real!',
+            "Ayo Ariana Grande, wassup mama? Come to Coney Island, take a spin on the Cyclone! ... I miss you",
+            "I have Seven. Female. Wives. Go to my Instagram!",
+            "'Sup, baby? Take me out to dinner...",
+            "Hey, Kim ain't got Sht. On. Me.",
+            "Yo, he got his phone in his balls. Steve Jobs did NOT die for this.",
+            "Hey, you see these dogs in your front yard? Just know upstairs I'm goin' hard. BING BONG",
+            "Who's the president? *BYRON!* Who? **BYRON!!** Say wassup to Byron: **WASSSSSUUUUPPPP BBBYYYYRRRRROOONNNNNN**",
+            "I'm the Boardwalk King.",
+            "We doin' things right, you hear me? We knock these grandmothers off their fkn skates, you heard? BING BONG",
+            "_*knocks hat*_ If you see this hard hat at your crib, heh, just know I'm in her ribs, you hear me?",
+            "JOE BYRON, HERE I AM, I AM NOBODY, BUT I AM SOMEBODY IN THE LORD. **JESUS CRISTOOOOOOOOO**",
+            "If I'm tryin' to tell you one thing this summer, don't die for free. Don't die. Not for free, you heard?",
+            "What you do? *PAIN!* What? **PAIN!!** What's your name? **P̹Ḁ̴̳̩͍͙I͙̱̘͚̻͍̫N̖!̗!͎͈̤͔̼̮͡**",
+        )
+        msg.append(random.choice(coney_islandisms))
     elif content.startswith('!pet cossi'):
         msg.append('*rubs up against <@%s>\'s leg*' % message.author.id)
     elif content.startswith('!math'):

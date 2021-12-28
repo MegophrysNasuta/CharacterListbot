@@ -476,8 +476,12 @@ if __name__ == '__main__':
             for toon in toons:
                 namestats[toon[0]] += 1
 
-            for letter in string.ascii_uppercase:
+            for letter in sorted(namestats, key=lambda k: namestats[k]):
                 print('%s:' % letter, '#' * namestats[letter])
+
+            for letter in string.ascii_uppercase:
+                if letter not in namestats:
+                    print('%s:' % letter)
         else:
             try:
                 data = search_toon_archive(arg)

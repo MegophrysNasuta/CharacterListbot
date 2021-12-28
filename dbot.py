@@ -372,8 +372,12 @@ async def on_message(message):
         for toon in toons:
             namestats[toon[0]] += 1
 
-        for letter in string.ascii_uppercase:
+        for letter in sorted(namestats, key=lambda k: namestats[k]):
             msg.append('%s: %s' % (letter, '#' * namestats[letter]))
+
+        for letter in string.ascii_uppercase:
+            if letter not in namestats:
+                msg.append('%s:' % letter)
 
     if msg:
         if len(msg) == 1:

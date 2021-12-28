@@ -372,7 +372,8 @@ async def on_message(message):
         for toon in toons:
             namestats[toon[0]] += 1
 
-        for letter in reversed(sorted(namestats, key=lambda k: namestats[k])):
+        for letter in reversed(sorted(namestats,
+                                      key=lambda k: (namestats[k], k))):
             msg.append('%s: %s' % (letter, '#' * namestats[letter]))
 
         for letter in string.ascii_uppercase:

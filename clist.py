@@ -136,7 +136,7 @@ def calculate_namestats(toons):
 
     backwards_alpha = list(reversed(string.ascii_uppercase))
     def sort_func(key):
-        return namestats[k], backwards_alpha.index(k)
+        return namestats[key], backwards_alpha.index(key)
 
     for letter in reversed(sorted(namestats, key=sort_func)):
         returned_msg.append('%s: %s' % (letter, '#' * namestats[letter]))

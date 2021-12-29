@@ -128,6 +128,26 @@ def adjust_pollopt_vote(emoji, vote_count):
         cursor.execute(sql, (int(vote_count), emoji))
 
 
+def calculate_namestats(toons):
+    returned_msg = []
+    namestats = defaultdict(int)
+    for toon in toons:
+        namestats[toon[0]] += 1
+
+    backwards_alpha = list(reversed(string.ascii_uppercase))
+    def sort_func(key):
+        return namestats[k], backwards_alpha.index(k)
+
+    for letter in reversed(sorted(namestats, key=sort_func)):
+        returned_msg.append('%s: %s' % (letter, '#' * namestats[letter]))
+
+    for letter in string.ascii_uppercase:
+        if letter not in namestats:
+            returned_msg.append('%s:' % letter)
+
+    return returned_msg
+
+
 def check_for_updates(since):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
@@ -472,17 +492,7 @@ if __name__ == '__main__':
             else:
                 toons = [toon[1] for toon in show_toon_archive()]
 
-            namestats = defaultdict(int)
-            for toon in toons:
-                namestats[toon[0]] += 1
-
-            for letter in reversed(sorted(namestats,
-                                          key=lambda k: (namestats[k], k))):
-                print('%s:' % letter, '#' * namestats[letter])
-
-            for letter in string.ascii_uppercase:
-                if letter not in namestats:
-                    print('%s:' % letter)
+            print('\n'.join(calculate_namestats(toons)))
         else:
             try:
                 data = search_toon_archive(arg)

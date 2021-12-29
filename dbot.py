@@ -368,17 +368,7 @@ async def on_message(message):
         else:
             toons = [toon[1] for toon in show_toon_archive()]
 
-        namestats = defaultdict(int)
-        for toon in toons:
-            namestats[toon[0]] += 1
-
-        for letter in reversed(sorted(namestats,
-                                      key=lambda k: (namestats[k], k))):
-            msg.append('%s: %s' % (letter, '#' * namestats[letter]))
-
-        for letter in string.ascii_uppercase:
-            if letter not in namestats:
-                msg.append('%s:' % letter)
+        msg.extend(calculate_namestats(toons))
 
     if msg:
         if len(msg) == 1:

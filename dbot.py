@@ -53,10 +53,9 @@ def eval_expr(expr):
 
 
 def roll_dice(die_type, num_dice=1):
+    die_type, num_dice = int(die_type), int(num_dice)
     if num_dice > 1000:
         raise ValueError("That's too many dice! :hot_face:")
-
-    die_type, num_dice = int(die_type), int(num_dice)
 
     if die_type == 0:
         return 0

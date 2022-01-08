@@ -52,8 +52,8 @@ def eval_expr(expr):
     return eval_(ast.parse(expr, mode='eval').body)
 
 
-def roll_dice(die_type, num_dice=1):
-    die_type, num_dice = int(die_type), int(num_dice)
+def roll_dice(die_type, num_dice=None):
+    die_type, num_dice = int(die_type), int(num_dice or 1)
     if num_dice > 1000:
         raise ValueError("That's too many dice! :hot_face:")
 

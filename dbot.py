@@ -17,6 +17,7 @@ from clist import *
 client = discord.Client()
 
 
+DICE_ROLLING_REGEX = re.compile('\!roll (?P<number>\d*)d(?P<die_type>\d+)')
 SET_POLLOPT_REGEX = re.compile('\!setpollopt (?P<pollopt_id>\d+) (?P<meaning>.*)')
 POLL_REGEX = re.compile('\!poll(?P<stingy> stingy)? (?P<question>.*)')
 POLL_OPEN_REGEX = re.compile('^Poll (?P<poll_id>\d+)')
@@ -49,6 +50,20 @@ def eval_expr(expr):
     -5.0
     """
     return eval_(ast.parse(expr, mode='eval').body)
+
+
+def roll_dice(die_type, num_dice=1):
+    if num_dice > 1000:
+        raise ValueError("That's too many dice! :hot_face:")
+
+    die_type, num_dice = int(die_type), int(num_dice)
+
+    if die_type == 0:
+        return 0
+    elif die_type == 1:
+        return num_dice
+
+    return sum((random.randint(1, die_type) for _ in range(num_dice)))
 
 
 def stUdLYcApS(s):
@@ -273,6 +288,14 @@ async def on_message(message):
             msg.append(str(e))
         else:
             msg.append('Set reminder to "%s" for %s!' % (matches['what'], when))
+    elif DICE_ROLLING_REGEX.match(content):
+        matches = DICE_ROLLING_REGEX.match(content)
+        try:
+            result = roll_dice(matches['die_type'], matches['number'])
+        except ValueError as e:
+            msg.append(str(e))
+        else:
+            msg.append(str(result))
     elif content.startswith('!deathsights'):
         try:
             _, player = content.split(None, 1)

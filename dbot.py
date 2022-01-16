@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import ast
+import asyncio
 from collections import defaultdict
 import operator as op
 import os
@@ -399,5 +400,23 @@ async def on_message(message):
             await message.channel.send('```\n%s\n```' % '\n'.join(msg))
 
 
+async def who_timer():
+    await client.wait_until_ready()
+    channel = server.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
+
+    toons = list_toons()
+    msg = []
+    total = 0
+    for city in sorted(toons):
+        msg.append('%s (%s)' % (city.title(), len(toons[city])))
+        msg.append(', '.join(toons[city]))
+        msg.append('')
+        total += len(toons[city])
+    msg.append('%i online.' % total)
+    await channel.send('\n'.join(msg))
+    await asyncio.sleep(300)
+
+
 if __name__ == '__main__':
+    client.loop.create_task(who_timer())
     client.run(os.environ['ACHAEA_WHOBOT_TOKEN'])

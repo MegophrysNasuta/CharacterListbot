@@ -2,6 +2,7 @@
 import ast
 import asyncio
 from collections import defaultdict
+import logging
 import operator as op
 import os
 import random
@@ -404,22 +405,24 @@ async def who_timer():
     await client.wait_until_ready()
     server = client.get_guild(os.environ['DISCORD_SPAM_SERVER'])
     if server is None:
-        raise RuntimeError('DISCORD_SPAM_SERVER not found')
+        logging.error('DISCORD_SPAM_SERVER not found')
 
-    channel = server.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
+    channel = server and server.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
     if channel is None:
-        raise RuntimeError('DISCORD_SPAM_CHANNEL not found')
+        logging.error('DISCORD_SPAM_CHANNEL not found')
 
-    toons = list_toons()
-    msg = []
-    total = 0
-    for city in sorted(toons):
-        msg.append('%s (%s)' % (city.title(), len(toons[city])))
-        msg.append(', '.join(toons[city]))
-        msg.append('')
-        total += len(toons[city])
-    msg.append('%i online.' % total)
-    await channel.send('\n'.join(msg))
+    if channel:
+        toons = list_toons()
+        msg = []
+        total = 0
+        for city in sorted(toons):
+            msg.append('%s (%s)' % (city.title(), len(toons[city])))
+            msg.append(', '.join(toons[city]))
+            msg.append('')
+            total += len(toons[city])
+        msg.append('%i online.' % total)
+        await channel.send('\n'.join(msg))
+
     await asyncio.sleep(300)
 
 

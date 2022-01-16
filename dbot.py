@@ -119,16 +119,33 @@ async def on_ready():
             msg.append('%i online.' % total)
             await channel.send('```%s```' % '\n'.join(msg))
 
-        targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))
-        if targ_server is None:
-            logging.error('DISCORD_TARG_SERVER not found')
+        wild_out = random.randint(1, 1000)
+        if wild_out == 1000:
+            targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))
+            if targ_server is None:
+                logging.error('DISCORD_TARG_SERVER not found')
 
-        bot_stuff = targ_server and targ_server.get_channel(int(os.environ['DISCORD_TARG_BOT_CHANNEL']))
-        if bot_stuff is None:
-            logging.error('DISCORD_TARG_BOT_CHANNEL not found')
+            bot_stuff = targ_server and targ_server.get_channel(int(os.environ['DISCORD_TARG_BOT_CHANNEL']))
+            if bot_stuff is None:
+                logging.error('DISCORD_TARG_BOT_CHANNEL not found')
 
-        if bot_stuff:
-            logging.critical(bot_stuff.members)
+            if bot_stuff:
+                wild_shit = list(coney_islandisms)
+                wild_shit.extend([
+                    '<@196283806066409472> pet me :pleading_face: :pleading_face: :pleading_face:',
+                    '<@196283806066409472> feed meeeeeeeee :triumph:'
+                    '<@307193594534690816> pet me :pleading_face: :pleading_face: :pleading_face:',
+                    '<@307193594534690816> feed meeeeeeeee :triumph:'
+                    '<@291653524356464644> pet me :pleading_face: :pleading_face: :pleading_face:',
+                    '<@291653524356464644> feed meeeeeeeee :triumph:'
+                    '<@112801483396755456> pet me :pleading_face: :pleading_face: :pleading_face:',
+                    '<@112801483396755456> feed meeeeeeeee :triumph:'
+                    '<@196283806066409472> you look nice today :nail_care:',
+                    '<@219310661610635264> feed me <@196283806066409472>, you promised!',
+                    '<@307193594534690816> feed me <@196283806066409472>, you promised!',
+                    '<@307193594534690816> feed me <@323899724916850698>, you promised!',
+                ])
+                bot_stuff.send(random.choice(wild_shit))
 
         await asyncio.sleep(1800)
 

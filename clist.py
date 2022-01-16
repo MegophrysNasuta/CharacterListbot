@@ -279,7 +279,7 @@ def list_toons(update=False, quick=False, post_to_discord=False):
             toon_list.setdefault(data['city'], []).append(toon['name'])
 
     if post_to_discord:
-        channel = discord.Client().get_channel('891066980101136387')
+        channel = discord.Client().get_channel(env['DISCORD_SPAM_CHANNEL'])
         if channel is not None:
             msg = []
             total = 0

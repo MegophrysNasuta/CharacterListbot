@@ -80,11 +80,11 @@ def stUdLYcApS(s):
 @client.event
 async def on_ready():
     while True:
-        server = client.get_guild(os.environ['DISCORD_SPAM_SERVER'])
+        server = client.get_guild(int(os.environ['DISCORD_SPAM_SERVER']))
         if server is None:
             logging.error('DISCORD_SPAM_SERVER not found')
 
-        channel = server and server.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
+        channel = server and server.get_channel(int(os.environ['DISCORD_SPAM_CHANNEL']))
         if channel is None:
             logging.error('DISCORD_SPAM_CHANNEL not found')
 

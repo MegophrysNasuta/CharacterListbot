@@ -26,6 +26,25 @@ POLL_OPEN_REGEX = re.compile('^Poll (?P<poll_id>\d+)')
 REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
 
 
+coney_islandisms = (
+    '**FK YA LIFE! BING BONG!**',
+    'Real, son, we keep it real!',
+    "Ayo Ariana Grande, wassup mama? Come to Coney Island, take a spin on the Cyclone! ... I miss you",
+    "I have Seven. Female. Wives. Go to my Instagram!",
+    "'Sup, baby? Take me out to dinner...",
+    "Hey, Kim ain't got Sht. On. Me.",
+    "Yo, he got his phone in his balls. Steve Jobs did NOT die for this.",
+    "Hey, you see these dogs in your front yard? Just know upstairs I'm goin' hard. BING BONG",
+    "Who's the president? *BYRON!* Who? **BYRON!!** Say wassup to Byron: **WASSSSSUUUUPPPP BBBYYYYRRRRROOONNNNNN**",
+    "I'm the Boardwalk King.",
+    "We doin' things right, you hear me? We knock these grandmothers off their fkn skates, you heard? BING BONG",
+    "_*knocks hat*_ If you see this hard hat at your crib, heh, just know I'm in her ribs, you hear me?",
+    "JOE BYRON, HERE I AM, I AM NOBODY, BUT I AM SOMEBODY IN THE LORD. **JESUS CRISTOOOOOOOOO**",
+    "If I'm tryin' to tell you one thing this summer, don't die for free. Don't die. Not for free, you heard?",
+    "What you do? *PAIN!* What? **PAIN!!** What's your name? **P̹Ḁ̴̳̩͍͙I͙̱̘͚̻͍̫N̖!̗!͎͈̤͔̼̮͡**",
+)
+
+
 math_operators = {ast.Add: op.add, ast.Sub: op.sub, ast.Mult: op.mul,
                   ast.Div: op.truediv, ast.Pow: op.pow, ast.BitXor: op.xor,
                   ast.USub: op.neg}
@@ -99,6 +118,17 @@ async def on_ready():
                 total += len(toons[city])
             msg.append('%i online.' % total)
             await channel.send('```%s```' % '\n'.join(msg))
+
+        targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))
+        if targ_server is None:
+            logging.error('DISCORD_TARG_SERVER not found')
+
+        bot_stuff = targ_server and targ_server.get_channel(int(os.environ['TARG_SERVER_BOT_CHANNEL']))
+        if bot_stuff is None:
+            logging.error('DISCORD_TARG_BOT_CHANNEL not found')
+
+        if bot_stuff:
+            logging.info(bot_stuff.members)
 
         await asyncio.sleep(1800)
 
@@ -195,23 +225,6 @@ async def on_message(message):
         )
         msg.append('Magic 8-Ball says: "%s"' % random.choice(magic_8ballisms))
     elif content.startswith('!bingbong'):
-        coney_islandisms = (
-            '**FK YA LIFE! BING BONG!**',
-            'Real, son, we keep it real!',
-            "Ayo Ariana Grande, wassup mama? Come to Coney Island, take a spin on the Cyclone! ... I miss you",
-            "I have Seven. Female. Wives. Go to my Instagram!",
-            "'Sup, baby? Take me out to dinner...",
-            "Hey, Kim ain't got Sht. On. Me.",
-            "Yo, he got his phone in his balls. Steve Jobs did NOT die for this.",
-            "Hey, you see these dogs in your front yard? Just know upstairs I'm goin' hard. BING BONG",
-            "Who's the president? *BYRON!* Who? **BYRON!!** Say wassup to Byron: **WASSSSSUUUUPPPP BBBYYYYRRRRROOONNNNNN**",
-            "I'm the Boardwalk King.",
-            "We doin' things right, you hear me? We knock these grandmothers off their fkn skates, you heard? BING BONG",
-            "_*knocks hat*_ If you see this hard hat at your crib, heh, just know I'm in her ribs, you hear me?",
-            "JOE BYRON, HERE I AM, I AM NOBODY, BUT I AM SOMEBODY IN THE LORD. **JESUS CRISTOOOOOOOOO**",
-            "If I'm tryin' to tell you one thing this summer, don't die for free. Don't die. Not for free, you heard?",
-            "What you do? *PAIN!* What? **PAIN!!** What's your name? **P̹Ḁ̴̳̩͍͙I͙̱̘͚̻͍̫N̖!̗!͎͈̤͔̼̮͡**",
-        )
         msg.append(random.choice(coney_islandisms))
     elif content.startswith('!pet cossi'):
         msg.append('*rubs up against <@%s>\'s leg*' % message.author.id)

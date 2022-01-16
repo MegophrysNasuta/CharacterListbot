@@ -9,6 +9,7 @@ import string
 import sys
 
 from dateutil.parser import parse as parse_date
+import discord
 import requests
 
 from db import DBContextManager
@@ -263,7 +264,7 @@ def is_poll_locked(poll_id):
         return bool(cursor.fetchone()[0])
 
 
-def list_toons(update=False, quick=False):
+def list_toons(update=False, quick=False, post_to_discord=False):
     toon_list = {}
     data = requests.get('%s.json' % API_URL).json()
     toons = data['characters']
@@ -276,6 +277,19 @@ def list_toons(update=False, quick=False):
         for toon in toons:
             data = db_action(conn, toon['name'])
             toon_list.setdefault(data['city'], []).append(toon['name'])
+
+    if post_to_discord:
+        channel = discord.Client().get_channel('891066980101136387')
+        if channel is not None:
+            msg = []
+            total = 0
+            for city in sorted(toons):
+                msg.append('%s (%s)' % (city.title(), len(toons[city])))
+                msg.append(', '.join(toons[city]))
+                msg.append('')
+                total += len(toons[city])
+            msg.append('%i online.' % total)
+            channel.send('\n'.join(msg))
 
     return toon_list
 
@@ -458,7 +472,7 @@ if __name__ == '__main__':
         elif arg.lower() == 'update':
             toons = list_toons(update=True)
             print('Toons updated!')
-            deaths_added = show_game_feed(update=True)
+            deaths_added = show_game_feed(update=True, post_to_discord=True)
             print('%i deaths added!' % deaths_added)
         elif arg.lower() == 'offline':
             toon_archive = show_toon_archive()

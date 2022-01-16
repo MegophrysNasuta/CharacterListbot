@@ -470,9 +470,9 @@ if __name__ == '__main__':
             print('%s (%s)' % (city.title(), len(toons[city])))
             print(', '.join(toons[city]))
         elif arg.lower() == 'update':
-            toons = list_toons(update=True)
+            toons = list_toons(update=True, post_to_discord=True)
             print('Toons updated!')
-            deaths_added = show_game_feed(update=True, post_to_discord=True)
+            deaths_added = show_game_feed(update=True)
             print('%i deaths added!' % deaths_added)
         elif arg.lower() == 'offline':
             toon_archive = show_toon_archive()

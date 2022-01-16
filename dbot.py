@@ -402,6 +402,7 @@ async def on_message(message):
 
 
 async def who_timer():
+    await client.login()
     while True:
         await client.wait_until_ready()
         server = client.get_guild(os.environ['DISCORD_SPAM_SERVER'])

@@ -98,9 +98,9 @@ async def on_ready():
                 msg.append('')
                 total += len(toons[city])
             msg.append('%i online.' % total)
-            await channel.send('\n'.join(msg))
+            await channel.send('```%s```' % '\n'.join(msg))
 
-        await asyncio.sleep(300)
+        await asyncio.sleep(1800)
 
 
 @client.event

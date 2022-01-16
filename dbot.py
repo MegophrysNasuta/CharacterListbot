@@ -402,28 +402,29 @@ async def on_message(message):
 
 
 async def who_timer():
-    await client.wait_until_ready()
-    server = client.get_guild(os.environ['DISCORD_SPAM_SERVER'])
-    if server is None:
-        logging.error('DISCORD_SPAM_SERVER not found')
+    while True:
+        await client.wait_until_ready()
+        server = client.get_guild(os.environ['DISCORD_SPAM_SERVER'])
+        if server is None:
+            logging.error('DISCORD_SPAM_SERVER not found')
 
-    channel = server and server.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
-    if channel is None:
-        logging.error('DISCORD_SPAM_CHANNEL not found')
+        channel = server and server.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
+        if channel is None:
+            logging.error('DISCORD_SPAM_CHANNEL not found')
 
-    if channel:
-        toons = list_toons()
-        msg = []
-        total = 0
-        for city in sorted(toons):
-            msg.append('%s (%s)' % (city.title(), len(toons[city])))
-            msg.append(', '.join(toons[city]))
-            msg.append('')
-            total += len(toons[city])
-        msg.append('%i online.' % total)
-        await channel.send('\n'.join(msg))
+        if channel:
+            toons = list_toons()
+            msg = []
+            total = 0
+            for city in sorted(toons):
+                msg.append('%s (%s)' % (city.title(), len(toons[city])))
+                msg.append(', '.join(toons[city]))
+                msg.append('')
+                total += len(toons[city])
+            msg.append('%i online.' % total)
+            await channel.send('\n'.join(msg))
 
-    await asyncio.sleep(300)
+        await asyncio.sleep(300)
 
 
 if __name__ == '__main__':

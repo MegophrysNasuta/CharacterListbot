@@ -402,7 +402,7 @@ async def on_message(message):
 
 async def who_timer():
     await client.wait_until_ready()
-    channel = server.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
+    channel = client.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
 
     toons = list_toons()
     msg = []

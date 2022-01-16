@@ -128,7 +128,7 @@ async def on_ready():
             logging.error('DISCORD_TARG_BOT_CHANNEL not found')
 
         if bot_stuff:
-            logging.info(bot_stuff.members)
+            logging.critical(bot_stuff.members)
 
         await asyncio.sleep(1800)
 

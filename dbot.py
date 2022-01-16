@@ -79,7 +79,28 @@ def stUdLYcApS(s):
 
 @client.event
 async def on_ready():
-    print('Ready!')
+    while True:
+        server = client.get_guild(os.environ['DISCORD_SPAM_SERVER'])
+        if server is None:
+            logging.error('DISCORD_SPAM_SERVER not found')
+
+        channel = server and server.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
+        if channel is None:
+            logging.error('DISCORD_SPAM_CHANNEL not found')
+
+        if channel:
+            toons = list_toons()
+            msg = []
+            total = 0
+            for city in sorted(toons):
+                msg.append('%s (%s)' % (city.title(), len(toons[city])))
+                msg.append(', '.join(toons[city]))
+                msg.append('')
+                total += len(toons[city])
+            msg.append('%i online.' % total)
+            await channel.send('\n'.join(msg))
+
+        await asyncio.sleep(300)
 
 
 @client.event
@@ -401,32 +422,5 @@ async def on_message(message):
             await message.channel.send('```\n%s\n```' % '\n'.join(msg))
 
 
-async def who_timer():
-    while True:
-        await client.wait_until_ready()
-        server = client.get_guild(os.environ['DISCORD_SPAM_SERVER'])
-        if server is None:
-            logging.error('DISCORD_SPAM_SERVER not found')
-
-        channel = server and server.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
-        if channel is None:
-            logging.error('DISCORD_SPAM_CHANNEL not found')
-
-        if channel:
-            toons = list_toons()
-            msg = []
-            total = 0
-            for city in sorted(toons):
-                msg.append('%s (%s)' % (city.title(), len(toons[city])))
-                msg.append(', '.join(toons[city]))
-                msg.append('')
-                total += len(toons[city])
-            msg.append('%i online.' % total)
-            await channel.send('\n'.join(msg))
-
-        await asyncio.sleep(300)
-
-
 if __name__ == '__main__':
-    client.loop.create_task(who_timer())
     client.run(os.environ['ACHAEA_WHOBOT_TOKEN'])

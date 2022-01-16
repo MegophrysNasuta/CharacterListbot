@@ -402,7 +402,13 @@ async def on_message(message):
 
 async def who_timer():
     await client.wait_until_ready()
-    channel = client.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
+    server = client.get_guild(os.environ['DISCORD_SPAM_SERVER'])
+    if server is None:
+        raise RuntimeError('DISCORD_SPAM_SERVER not found')
+
+    channel = server.get_channel(os.environ['DISCORD_SPAM_CHANNEL'])
+    if channel is None:
+        raise RuntimeError('DISCORD_SPAM_CHANNEL not found')
 
     toons = list_toons()
     msg = []

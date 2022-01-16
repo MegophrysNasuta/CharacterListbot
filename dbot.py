@@ -123,7 +123,7 @@ async def on_ready():
         if targ_server is None:
             logging.error('DISCORD_TARG_SERVER not found')
 
-        bot_stuff = targ_server and targ_server.get_channel(int(os.environ['TARG_SERVER_BOT_CHANNEL']))
+        bot_stuff = targ_server and targ_server.get_channel(int(os.environ['DISCORD_TARG_BOT_CHANNEL']))
         if bot_stuff is None:
             logging.error('DISCORD_TARG_BOT_CHANNEL not found')
 

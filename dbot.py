@@ -289,11 +289,11 @@ async def on_message(message):
                         )
                     )
                     msg.append(
-                        ('{name} has killed {d:,d} denizens and '
-                         '{a:,d} adventurers.').format(
+                        ('{name} has killed {d} denizens and '
+                         '{a} adventurers.').format(
                             name=name.title(),
-                            d=to_num(data.pop('mob_kills')),
-                            a=to_num(data.pop('player_kills')),
+                            d=expand_kills(data.pop('mob_kills')),
+                            a=expand_kills(data.pop('player_kills')),
                         )
                     )
                     msg.append(

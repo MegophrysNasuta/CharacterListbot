@@ -36,11 +36,11 @@ class CharacterNotFound(KeyError):
     pass
 
 
-def to_num(n):
+def expand_kills(n):
     if n.endswith('k'):
-        return int(n[:-1]) * 1000
+        return 'over {:,d}'.format(int(n[:-1]) * 1000)
     else:
-        return int(n)
+        return '{:,d}'.format(int(n))
 
 
 def fmt_sql(sql, n):
@@ -509,10 +509,10 @@ if __name__ == '__main__':
                         city=data.pop('city').title(),
                     ))
                 name = data.pop('name')
-                print('{name} has killed {d:,d} denizens and {a:,d} adventurers.'.format(
+                print('{name} has killed {d} denizens and {a} adventurers.'.format(
                         name=name,
-                        d=to_num(data.pop('mob_kills')),
-                        a=to_num(data.pop('player_kills')),
+                        d=expand_kills(data.pop('mob_kills')),
+                        a=expand_kills(data.pop('player_kills')),
                     ))
                 print('{name} is Explorer Rank {e:,d} and XP Rank {x:,d}.'.format(
                         name=name,

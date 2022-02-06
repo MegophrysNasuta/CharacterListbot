@@ -101,11 +101,11 @@ async def on_ready():
     while True:
         server = client.get_guild(int(os.environ['DISCORD_SPAM_SERVER']))
         if server is None:
-            logging.error('DISCORD_SPAM_SERVER not found')
+            raise RuntimeError('DISCORD_SPAM_SERVER not found')
 
         channel = server and server.get_channel(int(os.environ['DISCORD_SPAM_CHANNEL']))
         if channel is None:
-            logging.error('DISCORD_SPAM_CHANNEL not found')
+            raise RuntimeError('DISCORD_SPAM_CHANNEL not found')
 
         if channel:
             toons = list_toons()
@@ -123,11 +123,11 @@ async def on_ready():
         if wild_out > 1:
             targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))
             if targ_server is None:
-                logging.error('DISCORD_TARG_SERVER not found')
+                raise RuntimeError('DISCORD_TARG_SERVER not found')
 
             bot_stuff = targ_server and targ_server.get_channel(int(os.environ['DISCORD_TARG_BOT_CHANNEL']))
             if bot_stuff is None:
-                logging.error('DISCORD_TARG_BOT_CHANNEL not found')
+                raise RuntimeError('DISCORD_TARG_BOT_CHANNEL not found')
 
             if bot_stuff:
                 wild_shit = list(coney_islandisms)

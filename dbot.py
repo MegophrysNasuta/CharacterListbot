@@ -120,7 +120,7 @@ async def on_ready():
             await channel.send('```%s```' % '\n'.join(msg))
 
         wild_out = random.randint(1, 1000)
-        if wild_out > 1:
+        if wild_out > 999:
             targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))
             if targ_server is None:
                 raise RuntimeError('DISCORD_TARG_SERVER not found')

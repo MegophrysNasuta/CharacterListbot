@@ -145,7 +145,7 @@ async def on_ready():
                     '<@307193594534690816> feed me <@196283806066409472>, you promised!',
                     '<@307193594534690816> feed me <@323899724916850698>, you promised!',
                 ])
-                bot_stuff.send(random.choice(wild_shit))
+                await bot_stuff.send(random.choice(wild_shit))
 
         await asyncio.sleep(1800)
 

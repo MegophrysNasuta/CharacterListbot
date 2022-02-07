@@ -349,7 +349,7 @@ async def on_message(message):
             msg.append(str(e))
         else:
             msg.append(str(result))
-    elif content.startswith('!deathsight') or content.startswith('!history deathsight'):
+    elif content.startswith('!deathsight'):
         try:
             _, player = content.split(None, 1)
         except ValueError:

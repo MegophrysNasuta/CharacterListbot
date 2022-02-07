@@ -19,6 +19,7 @@ from clist import *
 client = discord.Client()
 
 
+CITY_WHO_REGEX = re.compile('\!(?P<city>mhaldor|hashan|ashtan|eleusis|targossas|cyrene)')
 DICE_ROLLING_REGEX = re.compile('\!roll (?P<number>\d*)d(?P<die_type>\d+)')
 SET_POLLOPT_REGEX = re.compile('\!setpollopt (?P<pollopt_id>\d+) (?P<meaning>.*)')
 POLL_REGEX = re.compile('\!poll(?P<stingy> stingy)? (?P<question>.*)')
@@ -348,7 +349,7 @@ async def on_message(message):
             msg.append(str(e))
         else:
             msg.append(str(result))
-    elif content.startswith('!deathsights'):
+    elif content.startswith('!deathsight') or content.startswith('!history deathsight'):
         try:
             _, player = content.split(None, 1)
         except ValueError:
@@ -417,6 +418,13 @@ async def on_message(message):
                     msg.append('Killed %s: %i' % row[:2])
             else:
                 msg.append('No kills recorded for %s.' % player)
+    elif CITY_WHO_REGEX.match(content):
+        toons = list_toons()
+        city = CITY_WHO_REGEX.match(content)['city']
+        msg.append('%s (%s)' % (city.title(), len(toons[city])))
+        msg.append(', '.join(toons[city]))
+        msg.append('')
+        msg.append('%i online.' % len(toons[city]))
     elif content.startswith('!who') or content.startswith('!online'):
         toons = list_toons()
         total = 0

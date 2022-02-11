@@ -455,7 +455,7 @@ async def on_message(message):
             msg.append('%s (%s)' % (city.title(), len(toons[city])))
             logosians = [toon for toon in toons[city]
                          if int(toon['level']) > 79]
-            msg.append(', '.join(logosians)
+            msg.append(', '.join(logosians))
             msg.append('')
             total += len(logosians)
         msg.append('%i online.' % total)

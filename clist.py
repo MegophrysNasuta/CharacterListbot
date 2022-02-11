@@ -217,7 +217,7 @@ def get_or_create_deathsight(db_connection, killer, corpse, external_id,
 
 def get_or_create_toon(db_connection, name):
     cursor = db_connection.cursor()
-    sql = fmt_sql(("SELECT c.city FROM characters c "
+    sql = fmt_sql(("SELECT c.city, c.level FROM characters c "
                    "WHERE c.name = %s ORDER BY c.id DESC;"), 1)
     cursor.execute(sql, (name,))
     try:
@@ -279,7 +279,7 @@ def list_toons(update=False, quick=False, min_level=1):
         db_action = update_toon if update else get_or_create_toon
         for toon in toons:
             data = db_action(conn, toon['name'])
-            if int(data.get('level', 1)) >= min_level:
+            if int(data['level']) >= min_level:
                 toon_list.setdefault(data['city'], []).append(toon['name'])
 
     return toon_list

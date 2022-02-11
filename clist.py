@@ -128,8 +128,9 @@ def adjust_pollopt_vote(emoji, vote_count):
         cursor.execute(sql, (int(vote_count), emoji))
 
 
-def calculate_namestats(toons):
-    returned_msg = []
+def calculate_namestats(toons, scaling_factor=1):
+    returned_msg = ['_# = %i_' % scaling_factor]
+
     namestats = defaultdict(int)
     for toon in toons:
         namestats[toon[0]] += 1
@@ -139,7 +140,8 @@ def calculate_namestats(toons):
         return namestats[key], backwards_alpha.index(key)
 
     for letter in reversed(sorted(namestats, key=sort_func)):
-        returned_msg.append('%s: %s' % (letter, '#' * namestats[letter]))
+        number = int(namestats[letter] / int(scaling_factor))
+        returned_msg.append('%s: %s' % (letter, '#' * number))
 
     for letter in string.ascii_uppercase:
         if letter not in namestats:

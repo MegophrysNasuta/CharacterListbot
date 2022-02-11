@@ -460,12 +460,14 @@ async def on_message(message):
         if arg not in ('online', 'offline'):
             arg = 'online'
 
+        scaling_factor = 1
         if arg == 'online':
             toons = list_toons(quick=True)
         else:
+            scaling_factor = 3
             toons = [toon[1] for toon in show_toon_archive()]
 
-        msg.extend(calculate_namestats(toons))
+        msg.extend(calculate_namestats(toons, scaling_factor=scaling_factor))
 
     if msg:
         if len(msg) == 1:

@@ -129,7 +129,7 @@ def adjust_pollopt_vote(emoji, vote_count):
 
 
 def calculate_namestats(toons, scaling_factor=1):
-    returned_msg = ['_# = %i_' % scaling_factor]
+    returned_msg = ['# = %i adventurers' % scaling_factor]
 
     namestats = defaultdict(int)
     for toon in toons:

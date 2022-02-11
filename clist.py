@@ -220,9 +220,10 @@ def get_or_create_toon(db_connection, name):
     sql = fmt_sql(("SELECT c.city, c.level FROM characters c "
                    "WHERE c.name = %s ORDER BY c.id DESC;"), 1)
     cursor.execute(sql, (name,))
+    data = None
     try:
         row = cursor.fetchall()[0]
-        return {'city': row[0], 'level': row[1]}
+        data = {'city': row[0], 'level': row[1]}
     except IndexError:
         data = get_toon_from_api(name)
         cursor.execute(fmt_sql("INSERT INTO characters (%s) VALUES (%s)" % (
@@ -230,7 +231,7 @@ def get_or_create_toon(db_connection, name):
                                ', '.join('%s' for field in API_FIELDS)),
                                len(API_FIELDS)),
                        [data[field] for field in API_FIELDS])
-        return data
+    return data
 
 
 def get_poll_owner(poll_id):

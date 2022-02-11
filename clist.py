@@ -221,7 +221,8 @@ def get_or_create_toon(db_connection, name):
                    "WHERE c.name = %s ORDER BY c.id DESC;"), 1)
     cursor.execute(sql, (name,))
     try:
-        return {'city': cursor.fetchall()[0]}
+        row = cursor.fetchall()[0]
+        return {'city': row[0], 'level': row[1]}
     except IndexError:
         data = get_toon_from_api(name)
         cursor.execute(fmt_sql("INSERT INTO characters (%s) VALUES (%s)" % (
@@ -279,8 +280,7 @@ def list_toons(update=False, quick=False, min_level=1):
         db_action = update_toon if update else get_or_create_toon
         for toon in toons:
             data = db_action(conn, toon['name'])
-            level = int(data.get('level') or data[1])
-            if level >= min_level:
+            if int(data['level']) >= min_level:
                 toon_list.setdefault(data['city'], []).append(toon['name'])
 
     return toon_list

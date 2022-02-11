@@ -27,6 +27,9 @@ POLL_OPEN_REGEX = re.compile('^Poll (?P<poll_id>\d+)')
 REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
 
 
+LAME_CITIES = ('(none)', 'cyrene', 'eleusis')
+
+
 coney_islandisms = (
     '**FK YA LIFE! BING BONG!**',
     'Real, son, we keep it real!',
@@ -114,7 +117,8 @@ async def on_ready():
             total = 0
             for city in sorted(toons):
                 msg.append('%s (%s)' % (city.title(), len(toons[city])))
-                msg.append(', '.join(toons[city]))
+                if city not in LAME_CITIES:
+                    msg.append(', '.join(toons[city]))
                 msg.append('')
                 total += len(toons[city])
             msg.append('%i online.' % total)
@@ -438,7 +442,9 @@ async def on_message(message):
         total = 0
         for city in sorted(toons):
             msg.append('%s (%s)' % (city.title(), len(toons[city])))
-            msg.append(', '.join(toons[city]))
+            if (not content.startswith('!who matters') or
+                    city not in LAME_CITIES):
+                msg.append(', '.join(toons[city]))
             msg.append('')
             total += len(toons[city])
         msg.append('%i online.' % total)

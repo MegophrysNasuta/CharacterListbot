@@ -267,7 +267,7 @@ def is_poll_locked(poll_id):
         return bool(cursor.fetchone()[0])
 
 
-def list_toons(update=False, quick=False):
+def list_toons(update=False, quick=False, min_level=1):
     toon_list = {}
     data = requests.get('%s.json' % API_URL).json()
     toons = data['characters']
@@ -279,7 +279,8 @@ def list_toons(update=False, quick=False):
         db_action = update_toon if update else get_or_create_toon
         for toon in toons:
             data = db_action(conn, toon['name'])
-            toon_list.setdefault(data['city'], []).append(toon['name'])
+            if int(toon['level']) >= min_level:
+                toon_list.setdefault(data['city'], []).append(toon['name'])
 
     return toon_list
 

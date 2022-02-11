@@ -279,7 +279,7 @@ def list_toons(update=False, quick=False, min_level=1):
         db_action = update_toon if update else get_or_create_toon
         for toon in toons:
             data = db_action(conn, toon['name'])
-            if int(toon['level']) >= min_level:
+            if int(data['level']) >= min_level:
                 toon_list.setdefault(data['city'], []).append(toon['name'])
 
     return toon_list

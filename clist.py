@@ -221,7 +221,7 @@ def get_or_create_toon(db_connection, name):
                    "WHERE c.name = %s ORDER BY c.id DESC;"), 1)
     cursor.execute(sql, (name,))
     try:
-        return {'city': cursor.fetchall()[0][0]}
+        return {'city': cursor.fetchall()[0]}
     except IndexError:
         data = get_toon_from_api(name)
         cursor.execute(fmt_sql("INSERT INTO characters (%s) VALUES (%s)" % (

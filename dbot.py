@@ -448,8 +448,8 @@ async def on_message(message):
             msg.append('')
             total += len(toons[city])
         msg.append('%i online.' % total)
-    elif content.startswith('!logosians'):
-        toons = list_toons(min_level=80)
+    elif content.startswith('!logosians') or content.startswith('!dragons'):
+        toons = list_toons(min_level=80 if content.startswith('!l') else 100)
         total = 0
         for city in sorted(toons):
             msg.append('%s (%s)' % (city.title(), len(toons[city])))

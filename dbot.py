@@ -437,13 +437,20 @@ async def on_message(message):
         msg.append(', '.join(toons[city]))
         msg.append('')
         msg.append('%i online.' % len(toons[city]))
-    elif content.startswith('!who') or content.startswith('!online'):
+    elif content.startswith('!who'):
         min_level = 1
-        if 'matters' in content:
+        positive_kdr = None
+        if content.endswith('matters'):
             min_level = 80
-            if 'matters more' in content:
-                min_level = 100
-        toons = list_toons(min_level=min_level)
+        elif content.endswith('matters more'):
+            min_level = 100
+        elif content.endswith('fucks'):
+            positive_kdr = True
+        elif content.endswith('sucks'):
+            positive_kdr = False
+
+        toons = list_toons(min_level=min_level,
+                           positive_kdr=positive_kdr)
         total = 0
         for city in sorted(toons):
             msg.append('%s (%s)' % (city.title(), len(toons[city])))

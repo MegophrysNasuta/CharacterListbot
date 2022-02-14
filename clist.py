@@ -400,21 +400,23 @@ def recalculate_kdr():
         setup_db_if_blank(conn)
         cursor = conn.cursor()
         sql = """
-        INSERT INTO kdr (kills, deaths) VALUES
-            (SELECT
-               CASE WHEN COUNT(d.corpse) = 0 THEN 1 ELSE COUNT(d.corpse) END,
-               (SELECT CASE WHEN COUNT(d2.killer) = 0 THEN 1
-                      ELSE COUNT(d2.killer) END
-                  FROM deaths d2
-                  WHERE d2.corpse = d.killer
-                  AND d2.kdr_count = 1)
+        INSERT INTO kdr (kills, deaths, kdr)
+        SELECT CASE WHEN COUNT(d.corpse) = 0 THEN 1
+               ELSE COUNT(d.corpse) END AS kills,
+        (SELECT CASE WHEN COUNT(d2.killer) = 0 THEN 1
+                ELSE COUNT(d2.killer) END
+            FROM deaths d2
+            WHERE d2.corpse = d.killer
+            AND d2.kdr_count = 1) AS deaths,
+        -1 AS kdr
             FROM deaths d
             WHERE d.kdr_count = 1
-            GROUP BY d.killer);
+            GROUP BY d.killer;
         """
         cursor.execute(sql)
         cursor.execute("UPDATE kdr SET kdr = "
-                       "CAST(kills AS DECIMAL) / deaths;")
+                       "CAST(kills AS DECIMAL) / deaths 
+                        WHERE kdr = -1;")
 
 
 def show_kdr(player, against=None):

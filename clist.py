@@ -91,6 +91,14 @@ def setup_db_if_blank(db_connection):
     """ % db[DB_TYPE]
     db_connection.cursor().execute(sql)
     sql = """
+    CREATE TABLE IF NOT EXISTS kdr (id %(pk)s,
+                                    timestamp %(date)s,
+                                    kills %(int)s,
+                                    deaths %(int)s,
+                                    kdr %(text)s);
+    """ % db[DB_TYPE]
+    db_connection.cursor().execute(sql)
+    sql = """
     CREATE TABLE IF NOT EXISTS updates (id %(pk)s,
                                         timestamp %(date)s);
     """ % db[DB_TYPE]
@@ -385,6 +393,28 @@ def show_game_feed(types=('DEA', 'DUE'), update=False):
 
         expunge_old_data()
         return deaths_added
+
+
+def recalculate_kdr():
+    with DBContextManager() as conn:
+        setup_db_if_blank(conn)
+        cursor = conn.cursor()
+        sql = """
+        INSERT INTO kdr (kills, deaths) VALUES
+            (SELECT
+                CASE WHEN COUNT(d.corpse) = 0 THEN 1 ELSE COUNT(d.corpse),
+                (SELECT CASE WHEN COUNT(d2.killer) = 0 THEN 1
+                        ELSE COUNT(d2.killer) END
+                    FROM deaths d2
+                    WHERE d2.corpse = d.killer
+                    AND d2.kdr_count = 1)
+             FROM deaths d
+             WHERE d.kdr_count = 1
+             GROUP BY d.killer);
+        """
+        cursor.execute(sql)
+        cursor.execute("UPDATE kdr SET kdr = "
+                       "CAST(kills AS DECIMAL) / deaths;")
 
 
 def show_kdr(player, against=None):

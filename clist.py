@@ -305,7 +305,7 @@ def list_toons(update=False, quick=False, min_level=1, positive_kdr=None):
         for toon in toons:
             data = db_action(conn, toon['name'])
             if (int(data['level']) >= min_level and
-                    is_positive_kdr(conn, toon['name'], positive_kdr)):
+                    is_kdr_positive(conn, toon['name'], positive_kdr)):
                 toon_list.setdefault(data['city'], []).append(toon['name'])
 
     return toon_list

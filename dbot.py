@@ -27,7 +27,7 @@ POLL_OPEN_REGEX = re.compile('^Poll (?P<poll_id>\d+)')
 REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
 
 
-LAME_CITIES = ('(none)', 'cyrene', 'eleusis')
+ERP_CITIES = ('(none)', 'cyrene', 'eleusis', 'hashan')
 
 
 coney_islandisms = (
@@ -112,12 +112,12 @@ async def on_ready():
             raise RuntimeError('DISCORD_SPAM_CHANNEL not found')
 
         if channel:
-            toons = list_toons()
+            toons = list_toons(min_level=80)
             msg = []
             total = 0
             for city in sorted(toons):
                 msg.append('%s (%s)' % (city.title(), len(toons[city])))
-                if city not in LAME_CITIES:
+                if city not in ERP_CITIES:
                     msg.append(', '.join(toons[city]))
                 msg.append('')
                 total += len(toons[city])
@@ -444,7 +444,7 @@ async def on_message(message):
         for city in sorted(toons):
             msg.append('%s (%s)' % (city.title(), len(toons[city])))
             if (not content.startswith('!who matters') or
-                    city not in LAME_CITIES):
+                    city not in ERP_CITIES):
                 msg.append(', '.join(toons[city]))
             msg.append('')
             total += len(toons[city])

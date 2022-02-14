@@ -403,6 +403,7 @@ def recalculate_kdr():
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
         cursor = conn.cursor()
+        cursor.execute('DELETE * from kdr;')
         sql = """
         INSERT INTO kdr (killer, kills, deaths, kdr)
         SELECT

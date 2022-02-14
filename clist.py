@@ -64,6 +64,7 @@ def setup_db_if_blank(db_connection):
             'text': 'varchar(255) NOT NULL',
             'date': 'timestamp DEFAULT CURRENT_TIMESTAMP',
             'int': 'int',
+            'decimal': 'decimal',
         },
         'sqlite': {
             'pk': 'integer PRIMARY KEY',
@@ -71,6 +72,7 @@ def setup_db_if_blank(db_connection):
             'text': 'text NOT NULL',
             'date': 'text DEFAULT CURRENT_TIMESTAMP',
             'int': 'integer',
+            'decimal': 'decimal',
         },
     }
 
@@ -96,7 +98,7 @@ def setup_db_if_blank(db_connection):
                                     killer %(text)s,
                                     kills %(int)s,
                                     deaths %(int)s,
-                                    kdr %(text)s);
+                                    kdr %(decimal)s);
     """ % db[DB_TYPE]
     db_connection.cursor().execute(sql)
     sql = """

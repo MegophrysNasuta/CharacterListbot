@@ -291,9 +291,9 @@ def list_toons(update=False, quick=False, min_level=1, positive_kdr=None):
         if positive_kdr is None:
             # settings disabled; everyone passes the check
             return True
-        result = (conn.cursor()
-                  .execute("SELECT kdr FROM kdr WHERE killer=%s", (name,)))
-        kdr = result.fetchall()[0][0]
+        cursor = conn.cursor()
+        cursor.execute("SELECT kdr FROM kdr WHERE killer=%s", (name,))
+        kdr = cursor.fetchall()[0][0]
         if positive_kdr:
             return kdr >= 1.0
         else:

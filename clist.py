@@ -402,12 +402,12 @@ def recalculate_kdr():
         sql = """
         INSERT INTO kdr (kills, deaths) VALUES
             SELECT
-               CASE WHEN COUNT(d.corpse) = 0 THEN 1 ELSE COUNT(d.corpse),
-               (SELECT CASE WHEN COUNT(d2.killer) = 0 THEN 1
-                       ELSE COUNT(d2.killer) END
-                   FROM deaths d2
-                   WHERE d2.corpse = d.killer
-                   AND d2.kdr_count = 1)
+               CASE WHEN COUNT(d.corpse) = 0 THEN 1 ELSE COUNT(d.corpse) END,
+               SELECT CASE WHEN COUNT(d2.killer) = 0 THEN 1
+                      ELSE COUNT(d2.killer) END
+                  FROM deaths d2
+                  WHERE d2.corpse = d.killer
+                  AND d2.kdr_count = )
             FROM deaths d
             WHERE d.kdr_count = 1
             GROUP BY d.killer;

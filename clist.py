@@ -415,8 +415,8 @@ def recalculate_kdr():
         """
         cursor.execute(sql)
         cursor.execute("UPDATE kdr SET kdr = "
-                       "CAST(kills AS DECIMAL) / deaths 
-                        WHERE kdr = -1;")
+                       "CAST(kills AS DECIMAL) / deaths "
+                       "WHERE kdr = -1;")
 
 
 def show_kdr(player, against=None):

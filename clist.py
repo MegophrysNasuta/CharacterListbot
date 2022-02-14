@@ -280,19 +280,32 @@ def is_poll_locked(poll_id):
         return bool(cursor.fetchone()[0])
 
 
-def list_toons(update=False, quick=False, min_level=1):
+def list_toons(update=False, quick=False, min_level=1, positive_kdr=None):
     toon_list = {}
     data = requests.get('%s.json' % API_URL).json()
     toons = data['characters']
     if quick:
         return [toon['name'] for toon in toons]
 
+    def is_kdr_positive(conn, name, positive_kdr=None):
+        if positive_kdr is None:
+            # settings disabled; everyone passes the check
+            return True
+        result = (conn.cursor()
+                  .execute("SELECT kdr FROM kdr WHERE killer='%s'", name))
+        kdr = result.fetchall()[0][0]
+        if positive_kdr:
+            return kdr >= 1.0
+        else:
+            return kdr < 1.0
+
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
         db_action = update_toon if update else get_or_create_toon
         for toon in toons:
             data = db_action(conn, toon['name'])
-            if int(data['level']) >= min_level:
+            if (int(data['level']) >= min_level and
+                    is_positive_kdr(conn, toon['name'], positive_kdr)):
                 toon_list.setdefault(data['city'], []).append(toon['name'])
 
     return toon_list

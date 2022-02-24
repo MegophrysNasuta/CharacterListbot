@@ -234,7 +234,6 @@ class Bracket:
         for i in range(self.rounds):
             for j, matchup in enumerate(self[i]):
                 if matchup.winner and matchup.winner != self.champion:
-                    print(i + 1, j,  j // 2, j % 2)
                     self[i + 1][j // 2][j % 2] = matchup.winner
         return self
 

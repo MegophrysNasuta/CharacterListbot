@@ -281,6 +281,8 @@ async def on_message(message):
         else:
             if name == 'namino':
                 msg.append('https://www.collinsdictionary.com/images/thumb/bush_132902558_250.jpg?version=4.0.187')
+            elif name in ('gesai', 'kholio', 'relaed'):
+                msg.append('https://ask2.extension.org/file.php?key=a2oszltmvb6ti1a1tvqbxace8eadb9bs&expires=1610755200&signature=49316c42c6706af7475564e4129b6266e30ebaff')
             else:
                 try:
                     data = search_toon_archive(name)

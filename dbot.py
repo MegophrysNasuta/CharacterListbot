@@ -27,7 +27,7 @@ POLL_OPEN_REGEX = re.compile('^Poll (?P<poll_id>\d+)')
 REMINDER_REGEX = re.compile('\!remind( me)?( to)? \"(?P<what>.*)\" (?P<when>.*)')
 
 
-ERP_CITIES = ('(none)', 'cyrene', 'eleusis', 'hashan')
+ERP_CITIES = ('(none)', 'cyrene', 'hashan')
 
 
 coney_islandisms = (

@@ -103,27 +103,6 @@ def stUdLYcApS(s):
 @client.event
 async def on_ready():
     while True:
-        server = client.get_guild(int(os.environ['DISCORD_SPAM_SERVER']))
-        if server is None:
-            raise RuntimeError('DISCORD_SPAM_SERVER not found')
-
-        channel = server and server.get_channel(int(os.environ['DISCORD_SPAM_CHANNEL']))
-        if channel is None:
-            raise RuntimeError('DISCORD_SPAM_CHANNEL not found')
-
-        if channel:
-            toons = list_toons(min_level=80)
-            msg = []
-            total = 0
-            for city in sorted(toons):
-                msg.append('%s (%s)' % (city.title(), len(toons[city])))
-                if city not in ERP_CITIES:
-                    msg.append(', '.join(toons[city]))
-                msg.append('')
-                total += len(toons[city])
-            msg.append('%i online.' % total)
-            await channel.send('```%s```' % '\n'.join(msg))
-
         wild_out = random.randint(1, 250)
         if wild_out > 249:
             targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))

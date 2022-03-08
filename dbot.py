@@ -416,9 +416,9 @@ async def on_message(message):
             city = '(none)'
         else:
             msg.append('%s:' % city.title())
-        msg.append(', '.join(toons[city]))
+        msg.append(', '.join(toons.get(city, ())))
         msg.append('')
-        msg.append('%i online.' % len(toons[city]))
+        msg.append('%i online.' % len(toons.get(city, ())))
     elif content.startswith('!who'):
         min_level = 1
         positive_kdr = None

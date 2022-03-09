@@ -424,7 +424,10 @@ async def on_message(message):
             msg.append(random.choice((
                 'The lights are on but nobody\'s home. :thinking:',
                 'Nope.',
+                '"%s" is not real. You made that up.' % city,
                 'https://media.giphy.com/media/1l7GT4n3CGTzW/giphy.gif',
+                'https://media.giphy.com/media/3ohjUXMSEIvIsVRmA8/giphy.gif',
+                'https://media.giphy.com/media/26hkhPJ5hmdD87HYA/giphy.gif',
             )))
     elif content.startswith('!who'):
         min_level = 1

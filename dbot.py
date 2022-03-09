@@ -411,14 +411,21 @@ async def on_message(message):
     elif CITY_WHO_REGEX.match(content):
         toons = list_toons()
         city = CITY_WHO_REGEX.match(content)['city']
-        if city == 'rogue':
-            msg.append('Literal Heathens:')
-            city = '(none)'
+        if city in toons:
+            if city == 'rogue':
+                msg.append('Literal Heathens:')
+                city = '(none)'
+            else:
+                msg.append('%s:' % city.title())
+            msg.append(', '.join(toons[city]))
+            msg.append('')
+            msg.append('%i online.' % len(toons[city]))
         else:
-            msg.append('%s:' % city.title())
-        msg.append(', '.join(toons.get(city, ())))
-        msg.append('')
-        msg.append('%i online.' % len(toons.get(city, ())))
+            msg.append(random.choice((
+                'The lights are on but nobody\'s home. :thinking:',
+                'Nope.',
+                'https://media.giphy.com/media/1l7GT4n3CGTzW/giphy.gif',
+            )))
     elif content.startswith('!who'):
         min_level = 1
         positive_kdr = None

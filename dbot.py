@@ -420,9 +420,10 @@ async def on_message(message):
                 msg.append('At the edge of sanity:')
             else:
                 msg.append('%s:' % city.title())
-            msg.append(', '.join(toons[city]))
+            key = translate_city(city)
+            msg.append(', '.join(toons[key]))
             msg.append('')
-            msg.append('%i online.' % len(toons[city]))
+            msg.append('%i online.' % len(toons[key]))
         else:
             msg.append(random.choice((
                 'The lights are on but nobody\'s home. :thinking:',

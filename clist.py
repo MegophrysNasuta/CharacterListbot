@@ -53,6 +53,8 @@ def get_toon_from_api(name):
     data = requests.get('%s/%s.json' % (API_URL, name)).json()
     if 'name' not in data:
         raise CharacterNotFound(name)
+    if 'name' in ('Evisi', 'Harenae'):
+        data['city'] = 'Tent City'
     return data
 
 
@@ -242,14 +244,7 @@ def get_or_create_toon(db_connection, name):
                                ', '.join('%s' for field in API_FIELDS)),
                                len(API_FIELDS)),
                        [data[field] for field in API_FIELDS])
-    update_tent_city(db_connection)
     return data
-
-
-def update_tent_city(db_connection):
-    cursor = db_connection.cursor()
-    cursor.execute('UPDATE characters SET city=\'Tent City\' WHERE '
-                   'name = \'Evisi\' or name = \'Harenae\'')
 
 
 def get_poll_owner(poll_id):

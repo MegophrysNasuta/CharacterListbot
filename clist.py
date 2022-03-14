@@ -248,8 +248,8 @@ def get_or_create_toon(db_connection, name):
 
 def update_tent_city(db_connection):
     cursor = db_connection.cursor()
-    cursor.execute('UPDATE characters SET city="Tent City" WHERE '
-                   'name = "Evisi" or name = "Harenae"')
+    cursor.execute('UPDATE characters SET city=\'Tent City\' WHERE '
+                   'name = \'Evisi\' or name = \'Harenae\'')
 
 
 def get_poll_owner(poll_id):

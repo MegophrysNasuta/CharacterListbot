@@ -246,10 +246,13 @@ async def on_message(message):
                 msg.append('Ow. What just happened?')
             except (SyntaxError, TypeError):
                 msg.append('Think of me like a small Casio. I think you need a TI-92 for that one.')
-    elif (content.startswith('!whois') or
+    elif (content.startswith('!whois') or content == '!leaves' or
             content.startswith('!honors')):
         try:
-            name = content.split(None, 1)[1]
+            if content == '!leaves':
+                name = 'daerik'
+            else:
+                name = content.split(None, 1)[1]
         except IndexError:
             if content.startswith('!honors'):
                 msg.append('Honors whom?!')

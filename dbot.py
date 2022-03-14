@@ -417,7 +417,7 @@ async def on_message(message):
                 city = '(none)'
             elif city == 'intents':
                 msg.append('At the edge of sanity:')
-                city = 'tent city'
+                city = 'Tent City'
             else:
                 msg.append('%s:' % city.title())
             msg.append(', '.join(toons[city]))

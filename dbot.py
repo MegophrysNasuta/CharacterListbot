@@ -473,10 +473,9 @@ async def on_message(message):
         msg.extend([', '.join(toons), '', '%i online.' % len(toons)])
     elif content.startswith('!romaen') or content.startswith('!lettucepray'):
         romaen_list = get_romaen_list()
-        romaen_list_flat = (set(romaen_list.get('contracts', ())) |
-                            set(romaen_list.get('rivals', ())))
-        toons = [toon for toon in list_toons(quick=True)
-                 if toon in romaen_list_flat]
+        romaen_set = (set(romaen_list.get('contracts', ())) |
+                      set(romaen_list.get('rivals', ())))
+        toons = set(list_toons(quick=True)) & romaen_set
         msg.extend([', '.join(toons), '', '%i online.' % len(toons)])
     elif content.startswith('!namestats'):
         try:

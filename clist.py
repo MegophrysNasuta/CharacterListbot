@@ -282,6 +282,10 @@ def is_poll_locked(poll_id):
         return bool(cursor.fetchone()[0])
 
 
+def get_romaen_list():
+    return requests.get('http://27theo.github.io/cause.json').json()
+
+
 def list_toons(update=False, quick=False, min_level=1, positive_kdr=None):
     toon_list = {}
     data = requests.get('%s.json' % API_URL).json()

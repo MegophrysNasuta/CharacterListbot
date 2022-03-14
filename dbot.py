@@ -471,6 +471,13 @@ async def on_message(message):
     elif content.startswith('!qw'):
         toons = list_toons(quick=True)
         msg.extend([', '.join(toons), '', '%i online.' % len(toons)])
+    elif content.startswith('!romaen') or content.startswith('!lettucepray'):
+        romaen_list = get_romaen_list()
+        romaen_list_flat = (set(romaen_list.get('contracts', ())) |
+                            set(romaen_list.get('rivals', ())))
+        toons = [toon for toon in list_toons(quick=True)
+                 if toon['name'] in romaen_list_flat]
+        msg.extend([', '.join(toons), '', '%i online.' % len(toons)])
     elif content.startswith('!namestats'):
         try:
             arg = content.split()[1]

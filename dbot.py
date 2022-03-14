@@ -19,7 +19,7 @@ from clist import *
 client = discord.Client()
 
 
-CITY_WHO_REGEX = re.compile('\!(?P<city>mhaldor|hashan|ashtan|eleusis|targossas|cyrene|rogue)')
+CITY_WHO_REGEX = re.compile('\!(?P<city>mhaldor|hashan|ashtan|eleusis|targossas|cyrene|rogue|intents)')
 DICE_ROLLING_REGEX = re.compile('\!roll (?P<number>\d*)d(?P<die_type>\d+)')
 SET_POLLOPT_REGEX = re.compile('\!setpollopt (?P<pollopt_id>\d+) (?P<meaning>.*)')
 POLL_REGEX = re.compile('\!poll(?P<stingy> stingy)? (?P<question>.*)')
@@ -415,6 +415,9 @@ async def on_message(message):
             if city == 'rogue':
                 msg.append('Literal Heathens:')
                 city = '(none)'
+            elif city == 'intents':
+                msg.append('At the edge of sanity:')
+                city = 'tent city'
             else:
                 msg.append('%s:' % city.title())
             msg.append(', '.join(toons[city]))

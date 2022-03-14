@@ -242,7 +242,7 @@ def get_or_create_toon(db_connection, name):
                                ', '.join('%s' for field in API_FIELDS)),
                                len(API_FIELDS)),
                        [data[field] for field in API_FIELDS])
-    update_tent_city()
+    update_tent_city(db_connection)
     return data
 
 

@@ -19,7 +19,7 @@ from clist import *
 client = discord.Client()
 
 
-CITY_WHO_REGEX = re.compile('\!(?P<city>mhaldor|hashan|ashtan|eleusis|targossas|cyrene|rogue|intents)')
+CITY_WHO_REGEX = re.compile('\!(?P<city>mhaldor|hashan|ashtan|eleusis|targossas|cyrene|rogues|intents)')
 DICE_ROLLING_REGEX = re.compile('\!roll (?P<number>\d*)d(?P<die_type>\d+)')
 SET_POLLOPT_REGEX = re.compile('\!setpollopt (?P<pollopt_id>\d+) (?P<meaning>.*)')
 POLL_REGEX = re.compile('\!poll(?P<stingy> stingy)? (?P<question>.*)')
@@ -411,13 +411,13 @@ async def on_message(message):
     elif CITY_WHO_REGEX.match(content):
         toons = list_toons()
         city = CITY_WHO_REGEX.match(content)['city']
-        if city in toons:
-            if city == 'rogue':
+        translations = {'rogues': '(none)', 'intents': 'Tent City'}
+        translate_city = lambda c: translations.get(c, c).title()
+        if translate_city(city) in toons:
+            if city == 'rogues':
                 msg.append('Literal Heathens:')
-                city = '(none)'
             elif city == 'intents':
                 msg.append('At the edge of sanity:')
-                city = 'Tent City'
             else:
                 msg.append('%s:' % city.title())
             msg.append(', '.join(toons[city]))
@@ -427,7 +427,7 @@ async def on_message(message):
             msg.append(random.choice((
                 'The lights are on but nobody\'s home. :thinking:',
                 'Nope.',
-                '"%s" is not real. You made that up.' % city,
+                '"%s" is not real. You made that up.' % translate_city(city),
                 'https://media.giphy.com/media/1l7GT4n3CGTzW/giphy.gif',
                 'https://media.giphy.com/media/3ohjUXMSEIvIsVRmA8/giphy.gif',
                 'https://media.giphy.com/media/26hkhPJ5hmdD87HYA/giphy.gif',

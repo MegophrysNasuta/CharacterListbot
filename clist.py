@@ -242,7 +242,14 @@ def get_or_create_toon(db_connection, name):
                                ', '.join('%s' for field in API_FIELDS)),
                                len(API_FIELDS)),
                        [data[field] for field in API_FIELDS])
+    update_tent_city()
     return data
+
+
+def update_tent_city(db_connection):
+    cursor = db_connection.cursor()
+    cursor.execute('UPDATE characters SET city="Tent City" WHERE '
+                   'name = "Evisi" or name = "Harenae"')
 
 
 def get_poll_owner(poll_id):

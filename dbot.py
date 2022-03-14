@@ -412,7 +412,7 @@ async def on_message(message):
         toons = list_toons()
         city = CITY_WHO_REGEX.match(content)['city']
         translations = {'rogues': '(none)', 'intents': 'Tent City'}
-        translate_city = lambda c: translations.get(c, c).title()
+        translate_city = lambda c: translations.get(c, c)
         if translate_city(city) in toons:
             if city == 'rogues':
                 msg.append('Literal Heathens:')

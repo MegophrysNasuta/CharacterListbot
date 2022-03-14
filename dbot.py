@@ -420,7 +420,7 @@ async def on_message(message):
             if city == 'rogues':
                 msg.append('Literal Heathens:')
             elif city == 'intents':
-                msg.append('At the edge of sanity:')
+                msg.append('Beyond the edge of sanity:')
             else:
                 msg.append('%s:' % city.title())
             key = translate_city(city)

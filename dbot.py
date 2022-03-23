@@ -19,6 +19,9 @@ from clist import *
 client = discord.Client()
 
 
+SECRET_WORD = 'potpie'
+
+
 CITY_WHO_REGEX = re.compile('\!(?P<city>mhaldor|hashan|ashtan|eleusis|targossas|cyrene|rogues|intents)')
 DICE_ROLLING_REGEX = re.compile('\!roll (?P<number>\d*)d(?P<die_type>\d+)')
 SET_POLLOPT_REGEX = re.compile('\!setpollopt (?P<pollopt_id>\d+) (?P<meaning>.*)')
@@ -202,6 +205,9 @@ async def on_message(message):
             "https://media.giphy.com/media/deSTGRBAr6TdkVEjCd/giphy.gif?cid=ecf05e478zcb8s57d8lxbjhm3pje0ixh0tmcr1sr2eet35mj&rid=giphy.gif&ct=g",
         )
         msg.append(random.choice(taunt_the_uk))
+    elif SECRET_WORD.lower() in content:
+        msg.append(re.search(SECRET_WORD.lower(), content,
+                             flags=re.IGNORECASE)[0])
     elif client.user in message.mentions and '?' in content:
         magic_8ballisms = (
             'It is certain.',

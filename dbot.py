@@ -206,7 +206,7 @@ async def on_message(message):
         )
         msg.append(random.choice(taunt_the_uk))
     elif SECRET_WORD.lower() in content:
-        msg.append(re.search(SECRET_WORD.lower(), content,
+        msg.append(re.search(SECRET_WORD.lower(), message.content,
                              flags=re.IGNORECASE)[0])
     elif client.user in message.mentions and '?' in content:
         magic_8ballisms = (

@@ -116,6 +116,8 @@ async def on_ready():
             if bot_stuff:
                 wild_shit = list(coney_islandisms)
                 wild_shit.extend([
+                    "Can't you make a tattoo gun out of a PS2 controller?",
+                    ":rainboweggplant:",
                     '<@196283806066409472> pet me :pleading_face: :pleading_face: :pleading_face:',
                     '<@196283806066409472> feed meeeeeeeee :triumph:'
                     '<@307193594534690816> pet me :pleading_face: :pleading_face: :pleading_face:',
@@ -126,7 +128,7 @@ async def on_ready():
                     '<@112801483396755456> feed meeeeeeeee :triumph:'
                     '<@196283806066409472> you look nice today :nail_care:',
                     '<@219310661610635264> feed me <@196283806066409472>, you promised!',
-                    '<@307193594534690816> feed me <@196283806066409472>, you promised!',
+                    '<@196283806066409472> feed me <@307193594534690816>, you promised!',
                     '<@307193594534690816> feed me <@323899724916850698>, you promised!',
                 ])
                 await bot_stuff.send(random.choice(wild_shit))

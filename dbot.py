@@ -19,7 +19,7 @@ from clist import *
 client = discord.Client()
 
 
-SECRET_WORD = 'potpie'
+SECRET_WORD = 'fuckyouante'
 
 
 CITY_WHO_REGEX = re.compile('\!(?P<city>mhaldor|hashan|ashtan|eleusis|targossas|cyrene|rogues|intents)')

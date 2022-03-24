@@ -223,7 +223,8 @@ async def on_message(message):
             "https://media.giphy.com/media/deSTGRBAr6TdkVEjCd/giphy.gif?cid=ecf05e478zcb8s57d8lxbjhm3pje0ixh0tmcr1sr2eet35mj&rid=giphy.gif&ct=g",
         )
         msg.append(random.choice(taunt_the_uk))
-    elif content == '!swcheat' and message.author == '731228796174336126':
+    elif content == '!swcheat': # and message.author == '731228796174336126':
+        logging.critical(message.author)
         msg.append(crazy_word)
     elif crazy_word in content:
         msg.append(re.search(crazy_word, message.content,

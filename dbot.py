@@ -19,7 +19,24 @@ from clist import *
 client = discord.Client()
 
 
-SECRET_WORD = 'fuckyouante'
+SECRET_WORD_BANK = (
+    'Deucbless', 'lmao', 'woo', 'cat', 'kitty', 'Penwize', 'clown',
+    'Nicola', 'mak', 'cyrene', 'Aurora', 'targ', 'raid', 'raiding',
+    'cake', 'shrub', 'weed', 'high', 'vape', 'stoned', 'scimitar',
+    'wtf', 'god damn', 'cossi', 'goat', 'pool', 'dick', 'suck',
+    'boris', 'britain', 'romaen', 'yayy', 'sexy', 'liquor', 'drunk',
+    'alyzar', 'kez', 'character', 'mark', 'veldrin', 'astarod', 'asty',
+    'no', 'bean', 'xd', 'contract', 'salad', 'huge', 'cheese', 'hungry',
+    'incredible', 'bugs', 'pariah', 'amranu', 'block', 'achaea',
+)
+
+
+def secret_word():
+    if (getattr(secret_word, '__word', None) is None or
+            random.random() < 0.6):
+        secret_word.__word = random.choice(SECRET_WORD_BANK)
+
+    return secret_word.__word.lower()
 
 
 CITY_WHO_REGEX = re.compile('\!(?P<city>mhaldor|hashan|ashtan|eleusis|targossas|cyrene|rogues|intents)')
@@ -182,6 +199,7 @@ async def on_message(message):
 
     msg = []
     content = message.content.lower()
+    secret_word = secret_word()
     if content.startswith('!honours'):
         taunt_the_uk = (
             stUdLYcApS(content),
@@ -205,8 +223,8 @@ async def on_message(message):
             "https://media.giphy.com/media/deSTGRBAr6TdkVEjCd/giphy.gif?cid=ecf05e478zcb8s57d8lxbjhm3pje0ixh0tmcr1sr2eet35mj&rid=giphy.gif&ct=g",
         )
         msg.append(random.choice(taunt_the_uk))
-    elif SECRET_WORD.lower() in content:
-        msg.append(re.search(SECRET_WORD.lower(), message.content,
+    elif secret_word in content:
+        msg.append(re.search(secret_word, message.content,
                              flags=re.IGNORECASE)[0])
     elif client.user in message.mentions and '?' in content:
         magic_8ballisms = (

@@ -26,7 +26,7 @@ SECRET_WORD_BANK = (
     'wtf', 'god damn', 'cossi', 'goat', 'pool', 'dick', 'suck',
     'boris', 'britain', 'romaen', 'yayy', 'sexy', 'liquor', 'drunk',
     'alyzar', 'kez', 'character', 'mark', 'veldrin', 'astarod', 'asty',
-    'no', 'bean', 'xd', 'contract', 'salad', 'huge', 'cheese', 'hungry',
+    'noo', 'bean', 'xd', 'contract', 'salad', 'huge', 'cheese', 'hungry',
     'incredible', 'bugs', 'pariah', 'amranu', 'block', 'achaea',
 )
 
@@ -223,8 +223,7 @@ async def on_message(message):
             "https://media.giphy.com/media/deSTGRBAr6TdkVEjCd/giphy.gif?cid=ecf05e478zcb8s57d8lxbjhm3pje0ixh0tmcr1sr2eet35mj&rid=giphy.gif&ct=g",
         )
         msg.append(random.choice(taunt_the_uk))
-    elif content == '!swcheat':
-        logging.critical(dir(message))
+    elif content == '!swcheat' and message.author == '731228796174336126':
         msg.append(crazy_word)
     elif crazy_word in content:
         msg.append(re.search(crazy_word, message.content,

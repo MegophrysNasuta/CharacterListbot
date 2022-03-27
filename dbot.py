@@ -20,10 +20,10 @@ client = discord.Client()
 
 
 SECRET_WORD_BANK = (
-    'Deucbless', 'lmao', 'woo', 'cat', 'kitty', 'Penwize', 'clown',
-    'Nicola', 'mak', 'cyrene', 'Aurora', 'targ', 'raid', 'raiding',
+    'Deucbless', 'lmao', 'wooo', 'cat', 'kitty', 'Penwize', 'clown',
+    'Nicola', 'cyrene', 'Aurora', 'targ', 'raiding',
     'cake', 'shrub', 'weed', 'high', 'vape', 'stoned', 'scimitar',
-    'wtf', 'god damn', 'cossi', 'goat', 'pool', 'dick', 'suck',
+    'wtf', 'god damn', 'cossi', 'goat', 'pool', 'dick', 'sucks',
     'boris', 'britain', 'romaen', 'yayy', 'sexy', 'liquor', 'drunk',
     'alyzar', 'kez', 'character', 'mark', 'veldrin', 'astarod', 'asty',
     'noo', 'bean', 'xd', 'contract', 'salad', 'huge', 'cheese', 'hungry',

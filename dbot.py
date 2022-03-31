@@ -33,7 +33,7 @@ SECRET_WORD_BANK = (
 
 def secret_word():
     if (getattr(secret_word, '__word', None) is None or
-            random.random() < 0.5):
+            random.random() < 0.55):
         secret_word.__word = random.choice(SECRET_WORD_BANK)
 
     return secret_word.__word.lower()

@@ -21,7 +21,7 @@ client = discord.Client()
 
 SECRET_WORD_BANK = (
     'Deucbless', 'lmao', 'wooo', 'cat', 'kitty', 'Penwize', 'clown',
-    'Nicola', 'cyrene', 'Aurora', 'targ', 'raiding',
+    'Nicola', 'cyrene', 'Aurora', 'targ', 'raiding', 'bitch', 'egg',
     'cake', 'shrub', 'weed', 'high', 'vape', 'stoned', 'scimitar',
     'wtf', 'god damn', 'cossi', 'goat', 'pool', 'dick', 'sucks',
     'boris', 'britain', 'romaen', 'yayy', 'sexy', 'liquor', 'drunk',
@@ -33,7 +33,7 @@ SECRET_WORD_BANK = (
 
 def secret_word():
     if (getattr(secret_word, '__word', None) is None or
-            random.random() < 0.6):
+            random.random() < 0.5):
         secret_word.__word = random.choice(SECRET_WORD_BANK)
 
     return secret_word.__word.lower()

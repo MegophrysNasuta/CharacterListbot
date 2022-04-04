@@ -227,7 +227,7 @@ async def on_message(message):
     elif content == '!swcheat' and str(message.author) == 'vsblackflame#5313':
         msg.append(crazy_word)
     elif crazy_word in content.split():
-        if crazy_word == 'cossi' and math.random() < 0.65:
+        if crazy_word == 'cossi' and random.random() < 0.65:
             msg.append(random.choice((
                 'who me?',
                 'wait, is that MY name?',

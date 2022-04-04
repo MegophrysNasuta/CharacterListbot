@@ -28,7 +28,7 @@ SECRET_WORD_BANK = (
     'alyzar', 'kez', 'character', 'mark', 'veldrin', 'astarod', 'cat',
     'noo', 'bean', 'xd', 'contract', 'salad', 'huge', 'cheese', 'hungry',
     'incredible', 'bugs', 'pariah', 'amranu', 'block', 'achaea',
-    'bloodsworn', 'crusade', 'fuck', 'shit', 'damn', 'ugh',
+    'bloodsworn', 'crusade', 'fuck', 'shit', 'damn', 'ugh', 'penis',
 )
 
 

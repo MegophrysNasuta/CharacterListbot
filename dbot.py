@@ -139,6 +139,7 @@ async def on_ready():
                 wild_shit.extend([
                     "Can't you make a tattoo gun out of a PS2 controller?",
                     ":rainboweggplant:",
+                    ":deucbless:",
                     '<@196283806066409472> pet me :pleading_face: :pleading_face: :pleading_face:',
                     '<@196283806066409472> feed meeeeeeeee :triumph:'
                     '<@307193594534690816> pet me :pleading_face: :pleading_face: :pleading_face:',

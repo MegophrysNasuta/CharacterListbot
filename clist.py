@@ -53,8 +53,6 @@ def get_toon_from_api(name):
     data = requests.get('%s/%s.json' % (API_URL, name)).json()
     if 'name' not in data:
         raise CharacterNotFound(name)
-    if data['name'] == 'Evisi':
-        data['city'] = 'Tent City'
     return data
 
 

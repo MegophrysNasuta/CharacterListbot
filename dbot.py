@@ -230,8 +230,11 @@ async def on_message(message):
     elif crazy_word in content.split():
         if crazy_word == 'cossi' and random.random() < 0.65:
             msg.append(random.choice((
-                'who me?',
-                'wait, is that MY name?',
+                "that's me!",
+                'yup',
+                "that's my name. don't wear it out. :unamused:",
+                'hi',
+                'yo',
             )))
         else:
             msg.append(re.search(crazy_word, message.content,

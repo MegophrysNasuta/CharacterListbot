@@ -264,7 +264,7 @@ async def on_message(message):
             'Very doubtful.',
             '[x] Doubt.',
         )
-        msg.append('Magic 8-Ball says: "%s"' % random.choice(magic_8ballisms))
+        msg.append(random.choice(magic_8ballisms))
     elif content.startswith('!bingbong'):
         msg.append(random.choice(coney_islandisms))
     elif content.startswith('!cossi'):

@@ -242,15 +242,15 @@ async def on_message(message):
                                  flags=re.IGNORECASE)[0])
     elif client.user in message.mentions and '?' in content:
         magic_8ballisms = (
-            'It is certain.',
+            'Oh, yeah.',
             'It is decidedly so.',
             'Without a doubt.',
             'Yes, definitely.',
-            'You may rely on it.',
+            'Yup',
             'As I see it, yes.',
             'Most likely.',
             'Outlook: Good.',
-            'Yes.',
+            'Yeah',
             'Signs point to yes.',
             'Uhhhhh :flushed:',
             ':smirk:',
@@ -258,7 +258,8 @@ async def on_message(message):
             'Pffff',
             'Are you for real?',
             "Don't count on it.",
-            'My reply is no.',
+            'Um, no.',
+            'Nope',
             'My sources say no.',
             'Outlook: Not so good.',
             'Very doubtful.',

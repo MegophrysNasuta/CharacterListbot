@@ -29,6 +29,7 @@ SECRET_WORD_BANK = (
     'noo', 'bean', 'xd', 'contract', 'salad', 'huge', 'cheese', 'hungry',
     'incredible', 'bugs', 'pariah', 'amranu', 'block', 'achaea',
     'bloodsworn', 'crusade', 'fuck', 'shit', 'damn', 'ugh', 'penis',
+    'serp serp', 'dawnlord', 'dawnlady', 'lumarch',
 )
 
 

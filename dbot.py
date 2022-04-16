@@ -267,11 +267,11 @@ async def on_message(message):
         msg.append(random.choice(magic_8ballisms))
     elif content.startswith('!bingbong'):
         msg.append(random.choice(coney_islandisms))
-    elif content.startswith('!' + client.user.name):
+    elif content.startswith('!' + client.user.name.lower()):
         msg.append("That's my name. Don't wear it out.")
     elif content.startswith('!nasuta'):
         msg.append('What is that supposed to do?')
-    elif (content.startswith('!pet ' + client.user.name) or
+    elif (content.startswith('!pet ' + client.user.name.lower()) or
             (client.user in message.mentions and content.startswith('!pet '))):
         msg.append('*rubs up against <@%s>\'s leg*' % message.author.id)
     elif content.startswith('!math'):

@@ -18,14 +18,13 @@ from clist import *
 
 client = discord.Client()
 
-
 SECRET_WORD_BANK = (
     'Deucbless', 'lmao', 'wooo', 'kitty', 'Penwize', 'clown', 'rory',
     'Nicola', 'cyrene', 'Aurora', 'targ', 'raiding', 'bitch', 'egg',
     'cake', 'shrub', 'weed', 'high', 'vape', 'stoned', 'scimitar',
-    'wtf', 'god damn', 'cossi', 'goat', 'pool', 'dick', 'sucks', 'mak',
+    'wtf', 'god damn', 'cossi', 'goat', 'pool', 'dick', 'sucks', 'vesyra',
     'boris', 'britain', 'romaen', 'yayy', 'sexy', 'liquor', 'drunk',
-    'alyzar', 'kez', 'character', 'mark', 'veldrin', 'astarod', 'cat',
+    'alyzar', 'kez', 'character', 'mark', 'veldrin', 'iaxus', 'cat',
     'noo', 'bean', 'xd', 'contract', 'salad', 'huge', 'cheese', 'hungry',
     'incredible', 'bugs', 'pariah', 'amranu', 'block', 'achaea',
     'bloodsworn', 'crusade', 'fuck', 'shit', 'damn', 'ugh', 'penis',
@@ -229,7 +228,7 @@ async def on_message(message):
     elif content == '!swcheat' and str(message.author) == 'vsblackflame#5313':
         msg.append(crazy_word)
     elif crazy_word in content.split():
-        if crazy_word == 'cossi' and random.random() < 0.65:
+        if crazy_word == client.user.name.lower() and random.random() < 0.65:
             msg.append(random.choice((
                 "that's me!",
                 'yup',
@@ -268,12 +267,12 @@ async def on_message(message):
         msg.append(random.choice(magic_8ballisms))
     elif content.startswith('!bingbong'):
         msg.append(random.choice(coney_islandisms))
-    elif content.startswith('!cossi'):
+    elif content.startswith('!' + client.user.name):
         msg.append("That's my name. Don't wear it out.")
     elif content.startswith('!nasuta'):
         msg.append('What is that supposed to do?')
-    elif content.startswith('!pet cossi') or (client.user in message.mentions and
-                                              content.startswith('!pet ')):
+    elif (content.startswith('!pet ' + client.user.name) or
+            (client.user in message.mentions and content.startswith('!pet ')):
         msg.append('*rubs up against <@%s>\'s leg*' % message.author.id)
     elif content.startswith('!math'):
         try:

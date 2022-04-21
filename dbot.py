@@ -213,6 +213,14 @@ async def on_message(message):
             "https://media.giphy.com/media/deSTGRBAr6TdkVEjCd/giphy.gif?cid=ecf05e478zcb8s57d8lxbjhm3pje0ixh0tmcr1sr2eet35mj&rid=giphy.gif&ct=g",
         )
         msg.append(random.choice(taunt_the_uk))
+    elif content.startswith('!givecaketo'):
+        animals_eating_cake = (
+            'https://c.tenor.com/8XDWT07FYh0AAAAM/hamster-cake.gif',
+            'https://c.tenor.com/mY2hkWe-0g4AAAAM/cat-slap.gif',
+            'https://c.tenor.com/KD0PVJ8WJcAAAAAM/more-for-me-stealing-food.gif',
+            'https://c.tenor.com/iXSKnxq5S74AAAAM/panda-happy.gif',
+        )
+        msg.append(random.choice(animals_eating_cake))
     elif content == '!swcheat' and str(message.author) == 'vsblackflame#5313':
         msg.append(crazy_word)
     elif crazy_word in content.split():

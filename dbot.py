@@ -140,6 +140,17 @@ async def on_ready():
                     "Can't you make a tattoo gun out of a PS2 controller?",
                     ":rainboweggplant:",
                     ":deucbless:",
+                    "I'm shittin'",
+                    "Stick",
+                    "What if capitalism supplied the drug trade lmfao",
+                    "straight up fuck you unlegal states",
+                    "I am going outside, please pray for my safety :pray:",
+                    "D:",
+                    "brah",
+                    "^",
+                    "gottem",
+                    "You just get string, tie it to a chicken leg, and find a shallow inlet",
+                    "Even the samurai have teddy bears, and even the teddy bears get drunk",
                 ])
                 await bot_stuff.send(random.choice(wild_shit))
 

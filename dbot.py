@@ -139,7 +139,7 @@ async def on_ready():
                 wild_shit.extend([
                     "Can't you make a tattoo gun out of a PS2 controller?",
                     ":rainboweggplant:",
-                    ":deucbless:",
+                    ":Deucbless:",
                     "Alyzar kinda looks nice today. Huh.",
                     "I'm shittin'",
                     "Stick",

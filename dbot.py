@@ -140,6 +140,7 @@ async def on_ready():
                     "Can't you make a tattoo gun out of a PS2 controller?",
                     ":rainboweggplant:",
                     ":deucbless:",
+                    "Alyzar kinda looks nice today. Huh.",
                     "I'm shittin'",
                     "Stick",
                     "What if capitalism supplied the drug trade lmfao",

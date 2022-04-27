@@ -2,7 +2,7 @@
 import ast
 import asyncio
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import operator as op
 import os
@@ -176,9 +176,10 @@ async def on_ready():
                 else:
                     logging.critical('%i purged.', len(deleted))
 
+            two_weeks_ago = datetime.today() - timedelta(days=13)
             try:
-                async for msg in channel.history():
-                    logging.critical('Expunging historical messages in %s', channel.name)
+                logging.critical('Expunging historical messages in %s', channel.name)
+                async for msg in channel.history(limit=None, before=two_weeks_ago):
                     if authored_by_target_user(msg):
                         await msg.delete()
             except discord.errors.Forbidden:

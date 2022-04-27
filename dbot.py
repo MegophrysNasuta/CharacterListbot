@@ -168,8 +168,12 @@ async def on_ready():
             logging.critical('Purging channel %s', channel.name)
             deleted = (None,)
             while len(deleted) > 0:
-                deleted = await channel.purge(limit=100, check=is_target_user)
-                logging.critical('%i purged.', len(deleted))
+                try:
+                    deleted = await channel.purge(limit=100, check=is_target_user)
+                except discord.errors.Forbidden:
+                    logging.critical('Cannot purge %s.', channel.name)
+                else:
+                    logging.critical('%i purged.', len(deleted))
         # PURGE USER CODE ENDS
 
         await asyncio.sleep(1800)

@@ -160,17 +160,7 @@ async def on_ready():
         if targ_server is None:
             raise RuntimeError('DISCORD_TARG_SERVER not found')
 
-        def authored_by_target_user(msg):
-            #LYNDEE = 443940537981075458
-            if msg.author.id == 368487544712593437:
-                return True
-
-            logging.critical(msg.author)
-            if str(msg.author).startswith('Mana'):
-                return True
-
-            return False
-
+        authored_by_target_user = lambda msg: str(msg.author) == 'Mana#9036'
         for channel in targ_server.channels:
             if not hasattr(channel, 'purge'): continue
             logging.critical('Purging channel %s', channel.name)
@@ -184,6 +174,11 @@ async def on_ready():
                     break
                 else:
                     logging.critical('%i purged.', len(deleted))
+
+            async for msg in client.logs_from(channel):
+                if authored_by_target_user(msg):
+                    await client.delete_message(msg)
+                    await asyncio.sleep(1.2)
         # PURGE USER CODE ENDS
 
         await asyncio.sleep(1800)

@@ -180,7 +180,8 @@ async def on_ready():
             oldest = datetime.today()
             while oldest >= oldest_sought:
                 try:
-                    async for msg in channel.history(limit=200):
+                    async for msg in channel.history(limit=200, before=oldest):
+                        logging.critical('Purging messages before %s', oldest)
                         if authored_by_target_user(msg):
                             await msg.delete()
                             await asyncio.sleep(1.2)

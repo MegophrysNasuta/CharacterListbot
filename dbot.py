@@ -164,6 +164,7 @@ async def on_ready():
         ANTE = '112801483396755456'
         is_target_user = lambda msg: msg.author == ANTE
         for channel in targ_server.channels:
+            if type(channel) != 'TextChannel': continue
             deleted = (None,)
             while len(deleted) > 0:
                 deleted = await channel.purge(limit=100, check=is_target_user)

@@ -172,6 +172,7 @@ async def on_ready():
                     deleted = await channel.purge(limit=100, check=is_target_user)
                 except discord.errors.Forbidden:
                     logging.critical('Cannot purge %s.', channel.name)
+                    break
                 else:
                     logging.critical('%i purged.', len(deleted))
         # PURGE USER CODE ENDS

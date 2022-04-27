@@ -161,14 +161,11 @@ async def on_ready():
             raise RuntimeError('DISCORD_TARG_SERVER not found')
 
         def authored_by_target_user(msg):
-            if not msg.author:
-                return False
-
             #LYNDEE = 443940537981075458
             if msg.author.id == 368487544712593437:
                 return True
 
-            if msg.author.name == 'Mana':
+            if str(msg.author).startswith('Mana'):
                 return True
 
             return False

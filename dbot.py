@@ -160,16 +160,28 @@ async def on_ready():
         if targ_server is None:
             raise RuntimeError('DISCORD_TARG_SERVER not found')
 
-        #LYNDEE = 443940537981075458
-        ELYRA = 368487544712593437
-        is_target_user = lambda msg: msg.author.id == ELYRA or str(msg.author) == 'Mana#9036'
+        def authored_by_target_user(msg):
+            if not msg.author:
+                return False
+
+            #LYNDEE = 443940537981075458
+            if msg.author.id == 368487544712593437:
+                return True
+
+            if msg.author.username == 'Mana':
+                if msg.author.discriminator == 9036:
+                    return True
+
+            return False
+
         for channel in targ_server.channels:
             if not hasattr(channel, 'purge'): continue
             logging.critical('Purging channel %s', channel.name)
             deleted = (None,)
             while len(deleted) > 0:
                 try:
-                    deleted = await channel.purge(limit=100, check=is_target_user)
+                    deleted = await channel.purge(limit=100,
+                                                  check=authored_by_target_user)
                 except discord.errors.Forbidden:
                     logging.critical('Cannot purge %s.', channel.name)
                     break

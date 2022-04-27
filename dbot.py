@@ -165,9 +165,11 @@ async def on_ready():
         is_target_user = lambda msg: msg.author == ANTE
         for channel in targ_server.channels:
             if type(channel) != 'TextChannel': continue
+            logging.critical('Purging channel %s', channel.name)
             deleted = (None,)
             while len(deleted) > 0:
                 deleted = await channel.purge(limit=100, check=is_target_user)
+                logging.critical('%i purged.', len(deleted))
         # PURGE USER CODE ENDS
 
         await asyncio.sleep(1800)

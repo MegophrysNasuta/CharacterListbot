@@ -2,6 +2,7 @@
 import ast
 import asyncio
 from collections import defaultdict
+from datetime import datetime
 import logging
 import operator as op
 import os
@@ -175,17 +176,19 @@ async def on_ready():
                 else:
                     logging.critical('%i purged.', len(deleted))
 
-            try:
-                oldest = None
-                async for msg in channel.history(limit=200):
-                    if authored_by_target_user(msg):
-                        if oldest is None or msg.created_at < oldest:
+            oldest_sought = datetime(2021, 1, 1)
+            oldest = datetime.today()
+            while oldest >= oldest_sought:
+                try:
+                    async for msg in channel.history(limit=200):
+                        if authored_by_target_user(msg):
+                            await msg.delete()
+                            await asyncio.sleep(1.2)
+                        if msg.created_at < oldest:
                             oldest = msg.created_at
-                        await msg.delete()
-                        await asyncio.sleep(1.2)
-                logging.critical(msg.created_at)
-            except discord.errors.Forbidden:
-                logging.critical('Cannot purge %s.', channel.name)
+                except discord.errors.Forbidden:
+                    logging.critical('Cannot purge %s.', channel.name)
+                    break
         # PURGE USER CODE ENDS
 
         await asyncio.sleep(1800)

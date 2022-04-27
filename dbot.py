@@ -156,19 +156,20 @@ async def on_ready():
                 await bot_stuff.send(random.choice(wild_shit))
 
         # TEMPORARY - PURGE USER
-        #targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))
-        #if targ_server is None:
-        #    raise RuntimeError('DISCORD_TARG_SERVER not found')
+        targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))
+        if targ_server is None:
+            raise RuntimeError('DISCORD_TARG_SERVER not found')
 
         #LYNDEE = 443940537981075458
-        #is_target_user = lambda msg: msg.author.id == LYNDEE
-        #for channel in targ_server.channels:
-        #    if not hasattr(channel, 'purge'): continue
-        #    logging.critical('Purging channel %s', channel.name)
-        #    deleted = (None,)
-        #    while len(deleted) > 0:
-        #        deleted = await channel.purge(limit=100, check=is_target_user)
-        #        logging.critical('%i purged.', len(deleted))
+        ELYRA = 368487544712593437
+        is_target_user = lambda msg: msg.author.id == ELYRA
+        for channel in targ_server.channels:
+            if not hasattr(channel, 'purge'): continue
+            logging.critical('Purging channel %s', channel.name)
+            deleted = (None,)
+            while len(deleted) > 0:
+                deleted = await channel.purge(limit=100, check=is_target_user)
+                logging.critical('%i purged.', len(deleted))
         # PURGE USER CODE ENDS
 
         await asyncio.sleep(1800)

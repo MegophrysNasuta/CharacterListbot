@@ -202,7 +202,33 @@ async def on_message(message):
     msg = []
     content = message.content.lower()
     crazy_word = secret_word()
-    if content.startswith('!honours'):
+    if content.startswith('!help') or content.startswith('!commands'):
+        me = client.user.name.title()
+        help_commands = {
+            ('Ask %s' % me): '@%s will it rain today?' % me,
+            '!bingbong': '!bingbong',
+            ('!cuddle %s' % me): '!cuddle %s' % me,
+            '!<city>': '!mhaldor',
+            '!deathsights': '!deathsights <optional name>',
+            '!dragons': '!dragons (or !who matters more)',
+            '!givecaketo': '!givecaketo <name>',
+            '!honors': '!honors <name>',
+            '!honours': '!honours <name>',
+            '!kdr': '!kdr <name> <optional name>',
+            '!killsights': '!killsights <optional name>',
+            '!logosians': '!logosians (or !who matters)',
+            '!math': '!math (3 + 5) * 8 / 3',
+            '!namestats': '!namestats (or !namestats offline)',
+            ('!pet %s' % me): '!pet %s' % me,
+            '!qw': '!qw',
+            '!roll': '!roll 3d6',
+            '!whois': '!whois <name>',
+            '!who': '!who [for KDR try !who fucks and !who sucks]',
+        }
+        for cmd, tryit in help_commands.items():
+            msg.append('%s TRY IT: %s' % ((cmd + ':').ljust(15), tryit))
+        msg.append('\nPlus over 20 hidden commands and easter eggs.')
+    elif content.startswith('!honours'):
         taunt_the_uk = (
             stUdLYcApS(content),
             'TEAM AMERICA, F**K YEAH! :flag_us::flag_us::flag_us:',

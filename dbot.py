@@ -162,7 +162,7 @@ async def on_ready():
 
         LYNDEE = '443940537981075458'
         ANTE = '112801483396755456'
-        is_target_user = lambda msg: msg.author == ANTE
+        is_target_user = lambda msg: msg.author.id == ANTE
         for channel in targ_server.channels:
             if not hasattr(channel, 'purge'): continue
             logging.critical('Purging channel %s', channel.name)

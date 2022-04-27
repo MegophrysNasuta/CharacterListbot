@@ -177,7 +177,7 @@ async def on_ready():
 
             async for msg in channel.history(limit=200):
                 if authored_by_target_user(msg):
-                    await client.delete_message(msg)
+                    await msg.delete()
                     await asyncio.sleep(1.2)
         # PURGE USER CODE ENDS
 

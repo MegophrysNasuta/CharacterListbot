@@ -168,8 +168,8 @@ async def on_ready():
             if msg.author.id == 368487544712593437:
                 return True
 
+            logging.critical(msg.author.name)
             if msg.author.name == 'Mana':
-                logging.critical(msg.author.name)
                 if msg.author.discriminator == 9036:
                     return True
 

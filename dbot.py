@@ -161,8 +161,8 @@ async def on_ready():
             raise RuntimeError('DISCORD_TARG_SERVER not found')
 
         LYNDEE = 443940537981075458
-        ANTE = 112801483396755456
-        is_target_user = lambda msg: msg.author.id == ANTE
+        ME = 731228796174336126
+        is_target_user = lambda msg: msg.author.id == ME
         for channel in targ_server.channels:
             if not hasattr(channel, 'purge'): continue
             logging.critical('Purging channel %s', channel.name)

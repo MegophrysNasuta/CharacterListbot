@@ -165,6 +165,7 @@ async def on_ready():
             if msg.author.id == 368487544712593437:
                 return True
 
+            logging.critical(msg.author)
             if str(msg.author).startswith('Mana'):
                 return True
 

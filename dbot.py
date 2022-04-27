@@ -183,7 +183,7 @@ async def on_ready():
                             oldest = msg.created_at
                         await msg.delete()
                         await asyncio.sleep(1.2)
-                logging.critical(oldest)
+                logging.critical(msg.created_at)
             except discord.errors.Forbidden:
                 logging.critical('Cannot purge %s.', channel.name)
         # PURGE USER CODE ENDS

@@ -124,7 +124,7 @@ def stUdLYcApS(s):
 @client.event
 async def on_ready():
     while True:
-        wild_out = random.randint(1, 250)
+        wild_out = random.randint(1, 248)
         if wild_out > 249:
             targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))
             if targ_server is None:
@@ -154,6 +154,20 @@ async def on_ready():
                     "Even the samurai have teddy bears, and even the teddy bears get drunk",
                 ])
                 await bot_stuff.send(random.choice(wild_shit))
+
+        # TEMPORARY - PURGE USER
+        targ_server = client.get_guild(int(os.environ['DISCORD_SPAM_SERVER']))
+        if targ_server is None:
+            raise RuntimeError('DISCORD_TARG_SERVER not found')
+
+        LYNDEE = '443940537981075458'
+        ANTE = '112801483396755456'
+        is_target_user = lambda msg: msg.author == ANTE
+        for channel in targ_server.channels:
+            deleted = (None,)
+            while len(deleted) > 0:
+                deleted = await channel.purge(limit=100, check=is_target_user)
+        # PURGE USER CODE ENDS
 
         await asyncio.sleep(1800)
 

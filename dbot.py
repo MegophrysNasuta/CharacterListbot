@@ -175,7 +175,7 @@ async def on_ready():
                 else:
                     logging.critical('%i purged.', len(deleted))
 
-            async for msg in client.logs_from(channel):
+            async for msg in channel.history(limit=200):
                 if authored_by_target_user(msg):
                     await client.delete_message(msg)
                     await asyncio.sleep(1.2)

@@ -168,7 +168,7 @@ async def on_ready():
             if msg.author.id == 368487544712593437:
                 return True
 
-            if msg.author.username == 'Mana':
+            if msg.author.name == 'Mana':
                 if msg.author.discriminator == 9036:
                     return True
 

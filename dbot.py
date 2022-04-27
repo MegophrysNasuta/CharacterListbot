@@ -226,7 +226,7 @@ async def on_message(message):
             '!who': '!who [for KDR try !who fucks and !who sucks]',
         }
         for cmd, tryit in help_commands.items():
-            msg.append('%s TRY IT: %s' % ((cmd + ':').ljust(15), tryit))
+            msg.append('%s TRY IT: %s' % (cmd.ljust(20), tryit))
         msg.append('\nPlus over 20 hidden commands and easter eggs.')
     elif content.startswith('!honours'):
         taunt_the_uk = (

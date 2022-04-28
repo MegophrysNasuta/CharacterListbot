@@ -161,7 +161,7 @@ async def on_ready():
         if targ_server is None:
             raise RuntimeError('DISCORD_TARG_SERVER not found')
 
-        authored_by_target_user = lambda msg: str(msg.author) == 'Mana#9036'
+        authored_by_target_user = lambda msg: str(msg.author) == 'Kio#2136'
         for channel in targ_server.channels:
             if not hasattr(channel, 'purge'): continue
             logging.critical('Purging channel %s', channel.name)

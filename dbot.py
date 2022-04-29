@@ -163,6 +163,7 @@ async def on_ready():
         authored_by_target_user = lambda msg: str(msg.author) == 'Kio#2136'
         #authored_by_target_user = lambda msg: str(msg.author) == 'Lyndee#6002'
         for channel in targ_server.channels:
+            if 'nsfw' not in channel.name: continue
             if not hasattr(channel, 'purge'): continue
             logging.critical('Purging channel %s', channel.name)
             deleted = (None,)

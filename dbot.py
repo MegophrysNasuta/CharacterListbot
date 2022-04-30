@@ -155,35 +155,35 @@ async def on_ready():
                 ])
                 await bot_stuff.send(random.choice(wild_shit))
 
-        ## TEMPORARY - PURGE USER
-        #targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))
-        #if targ_server is None:
-        #    raise RuntimeError('DISCORD_TARG_SERVER not found')
-        #
-        #authored_by_target_user = lambda msg: str(msg.author) == 'Lyndee#6002'
-        #for channel in targ_server.channels:
-        #    if not hasattr(channel, 'purge'): continue
-        #    logging.critical('Purging channel %s', channel.name)
-        #    deleted = (None,)
-        #    while len(deleted) > 0:
-        #        try:
-        #            deleted = await channel.purge(limit=100,
-        #                                          check=authored_by_target_user)
-        #        except discord.errors.Forbidden:
-        #            logging.critical('Cannot purge %s.', channel.name)
-        #            break
-        #        else:
-        #            logging.critical('%i purged.', len(deleted))
-        #
-        #    two_weeks_ago = datetime.today() - timedelta(days=13)
-        #    try:
-        #        logging.critical('Expunging historical messages in %s', channel.name)
-        #        async for msg in channel.history(limit=None, before=two_weeks_ago):
-        #            if authored_by_target_user(msg):
-        #                await msg.delete()
-        #    except discord.errors.Forbidden:
-        #        logging.critical('Cannot purge %s.', channel.name)
-        ## PURGE USER CODE ENDS
+        # TEMPORARY - PURGE USER
+        targ_server = client.get_guild(int(os.environ['DISCORD_TARG_SERVER']))
+        if targ_server is None:
+            raise RuntimeError('DISCORD_TARG_SERVER not found')
+
+        authored_by_target_user = lambda msg: str(msg.author) == 'vsblackflame#5313'
+        for channel in targ_server.channels:
+            if not hasattr(channel, 'purge'): continue
+            #logging.critical('Purging channel %s', channel.name)
+            #deleted = (None,)
+            #while len(deleted) > 0:
+            #    try:
+            #        deleted = await channel.purge(limit=100,
+            #                                      check=authored_by_target_user)
+            #    except discord.errors.Forbidden:
+            #        logging.critical('Cannot purge %s.', channel.name)
+            #        break
+            #    else:
+            #        logging.critical('%i purged.', len(deleted))
+
+            two_weeks_ago = datetime.today() - timedelta(days=13)
+            try:
+                logging.critical('Expunging historical messages in %s', channel.name)
+                async for msg in channel.history(limit=None, before=two_weeks_ago):
+                    if authored_by_target_user(msg):
+                        await msg.delete()
+            except discord.errors.Forbidden:
+                logging.critical('Cannot purge %s.', channel.name)
+        # PURGE USER CODE ENDS
 
         await asyncio.sleep(1800)
 

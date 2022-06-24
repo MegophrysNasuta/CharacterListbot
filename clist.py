@@ -318,7 +318,7 @@ def list_toons(update=False, quick=False, min_level=1, positive_kdr=None,
         setup_db_if_blank(conn)
         db_action = update_toon if update else get_or_create_toon
         for toon in toons:
-            data = db_action(conn, toon['name'])
+            data = db_action(conn, toon['name'], api_url=api_url)
             if (int(data['level']) >= min_level and
                     is_kdr_positive(conn, toon['name'], positive_kdr)):
                 toon_list.setdefault(data['city'], []).append(toon['name'])

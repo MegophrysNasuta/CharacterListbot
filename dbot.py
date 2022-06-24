@@ -553,7 +553,11 @@ async def on_message(message):
         elif content.endswith('sucks'):
             positive_kdr = False
 
-        toons = list_toons(min_level=min_level,
+        api_url = None
+        if content.startswith('!whotolia'):
+            api_url = API_URL.replace('achaea', 'aetolia')
+
+        toons = list_toons(min_level=min_level, api_url=api_url,
                            positive_kdr=positive_kdr)
         total = 0
         for city in sorted(toons):

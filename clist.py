@@ -49,8 +49,10 @@ def fmt_sql(sql, n):
     return sql
 
 
-def get_toon_from_api(name):
-    data = requests.get('%s/%s.json' % (API_URL, name)).json()
+def get_toon_from_api(name, api_url=None):
+    if api_url is None:
+        api_url = API_URL
+    data = requests.get('%s/%s.json' % (api_url, name)).json()
     if 'name' not in data:
         raise CharacterNotFound(name)
     return data
@@ -284,9 +286,13 @@ def get_romaen_list():
     return requests.get('http://27theo.github.io/cause.json').json()
 
 
-def list_toons(update=False, quick=False, min_level=1, positive_kdr=None):
+def list_toons(update=False, quick=False, min_level=1, positive_kdr=None,
+               api_url=None):
+    if api_url is None:
+        api_url = API_URL
+
     toon_list = {}
-    data = requests.get('%s.json' % API_URL).json()
+    data = requests.get('%s.json' % api_url).json()
     toons = data['characters']
     if quick:
         return [toon['name'] for toon in toons]
@@ -382,8 +388,11 @@ def expunge_old_data():
                        "WHERE d.timestamp < '%s'" % nine_days_ago)
 
 
-def show_game_feed(types=('DEA', 'DUE'), update=False):
-    url = '%s.json' % API_URL.replace('characters', 'gamefeed')
+def show_game_feed(types=('DEA', 'DUE'), update=False, api_url=None):
+    if api_url is None:
+        api_url = API_URL
+
+    url = '%s.json' % api_url.replace('characters', 'gamefeed')
     data = requests.get(url).json()
     feed = [row for row in data if row['type'] in types]
     if not update:

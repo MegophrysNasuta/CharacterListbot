@@ -653,18 +653,21 @@ async def on_message(message):
         api_url = None
         if content.startswith("!whotolia"):
             api_url = API_URL.replace("achaea", "aetolia")
-
-        toons = list_toons(
-            min_level=min_level, api_url=api_url, positive_kdr=positive_kdr
-        )
-        total = 0
-        for city in sorted(toons):
-            if city:
-                msg.append("%s (%s)" % (city.title(), len(toons[city])))
-            if not content.startswith("!who matters") or city not in ERP_CITIES:
-                msg.append(", ".join(toons[city]))
-            msg.append("")
-            total += len(toons[city])
+            msg.append(", ".join(list_toons(
+                min_level=min_level, api_url=api_url, positive_kdr=positive_kdr, quick=True
+            )))
+        else:
+            toons = list_toons(
+                min_level=min_level, api_url=api_url, positive_kdr=positive_kdr
+            )
+            total = 0
+            for city in sorted(toons):
+                if city:
+                    msg.append("%s (%s)" % (city.title(), len(toons[city])))
+                if not content.startswith("!who matters") or city not in ERP_CITIES:
+                    msg.append(", ".join(toons[city]))
+                msg.append("")
+                total += len(toons[city])
         msg.append("%i online." % total)
     elif content.startswith("!logosians") or content.startswith("!dragons"):
         toons = list_toons(min_level=80 if content.startswith("!l") else 100)

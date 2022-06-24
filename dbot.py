@@ -653,9 +653,11 @@ async def on_message(message):
         api_url = None
         if content.startswith("!whotolia"):
             api_url = API_URL.replace("achaea", "aetolia")
-            msg.append(", ".join(list_toons(
+            toons = list_toons(
                 min_level=min_level, api_url=api_url, positive_kdr=positive_kdr, quick=True
-            )))
+            )
+            msg.append(", ".join(toons))
+            total = len(toons)
         else:
             toons = list_toons(
                 min_level=min_level, api_url=api_url, positive_kdr=positive_kdr

@@ -243,7 +243,7 @@ def get_or_create_toon(db_connection, name, api_url=None):
                                ', '.join(API_FIELDS),
                                ', '.join('%s' for field in API_FIELDS)),
                                len(API_FIELDS)),
-                       [data[field] for field in API_FIELDS])
+                       [data.get(field) for field in API_FIELDS])
     return data
 
 

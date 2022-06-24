@@ -16,13 +16,13 @@ class Matchup:
 
         if value == 0:
             player_won = self.player1 and self.player1 == self.winner
-            return '%s%s' % (self.player1 or '',
-                             '_[W]' if player_won else '')
+            return "%s%s" % (self.player1 or "", "_[W]" if player_won else "")
         else:
             player_won = self.player2 and self.player2 == self.winner
-            return '%s%s' % (self.player2 or ('BYE' if self.player1
-                                                    else ''),
-                             '_[W]' if player_won else '')
+            return "%s%s" % (
+                self.player2 or ("BYE" if self.player1 else ""),
+                "_[W]" if player_won else "",
+            )
 
     def __setitem__(self, index, value):
         index = int(index)
@@ -36,12 +36,14 @@ class Matchup:
 
     def declare_winner(self, winner=None):
         if self.player1 is None:
-            raise RuntimeError("It is too early to declare a winner in "
-                               "this matchup.")
+            raise RuntimeError(
+                "It is too early to declare a winner in " "this matchup."
+            )
 
         if winner not in (self.player1, self.player2):
-            raise RuntimeError("%s cannot win the match since they're "
-                               "not playing." % winner)
+            raise RuntimeError(
+                "%s cannot win the match since they're " "not playing." % winner
+            )
 
         if self.player2 is None:
             self.winner = self.player1
@@ -54,15 +56,17 @@ class Matchup:
         p1, p2 = self.player1, self.player2
 
         if p1 is None:
-            return 'Blank Matchup'
+            return "Blank Matchup"
         elif p2 is None:
-            return '%s (Bye)' % p1
+            return "%s (Bye)" % p1
 
         p1won = p1 and p1 == self.winner
         p2won = p2 and p2 == self.winner
-        return '%s%s vs %s%s' % (
-            p1, ' [W]' if p1won else '',
-            p2, ' [W]' if p2won else '',
+        return "%s%s vs %s%s" % (
+            p1,
+            " [W]" if p1won else "",
+            p2,
+            " [W]" if p2won else "",
         )
 
 
@@ -84,7 +88,7 @@ class Bracket:
     def __getitem__(self, value: int):
         return self._bracket[int(value)]
 
-    def __setitem__(self, index: int, value: 'BracketRound'):
+    def __setitem__(self, index: int, value: "BracketRound"):
         self._bracket[int(index)] = value
 
     def __iter__(self):
@@ -124,14 +128,13 @@ class Bracket:
         return width
 
     def draw(self):
-        lines = [('_' if i % 2 == 0 else '')
-                 for i in range(2**(self.rounds + 1) - 1)]
+        lines = [("_" if i % 2 == 0 else "") for i in range(2 ** (self.rounds + 1) - 1)]
 
         p = 0
         for i in range(0, len(lines), 2):
-            lines[i] += self[0][i // 4][p].ljust(self.padding + 1, '_')
+            lines[i] += self[0][i // 4][p].ljust(self.padding + 1, "_")
             if p == 1:
-                lines[i] += '/'
+                lines[i] += "/"
                 p = 0
             else:
                 p = 1
@@ -139,10 +142,11 @@ class Bracket:
         j, p = 0, 0
         for i in range(1, len(lines), 2):
             if i % 4 == 1:
-                lines[i] += '%s%s_%s_' % (' ' * (self.padding + 2),
-                                          '\\',
-                                          ((self[1][j][p] or '')
-                                                .ljust(self.padding, '_')))
+                lines[i] += "%s%s_%s_" % (
+                    " " * (self.padding + 2),
+                    "\\",
+                    ((self[1][j][p] or "").ljust(self.padding, "_")),
+                )
                 if p == 1:
                     p = 0
                     j += 1
@@ -151,7 +155,7 @@ class Bracket:
 
         pad = self.padding
         for i in range(1, min(self.rounds, 2)):
-            start = 2 ** i
+            start = 2**i
             for matchup in self[i]:
                 num_spaces = pad + 2
                 for j in range(2**i):
@@ -164,34 +168,42 @@ class Bracket:
                         extra_pad = pad + 2
                         if len(lines[idx]) == pad + 3 and j != 2:
                             extra_pad += pad + 2
-                        elif (i > 2 and j > 3 and i % 2 != j % 2 and
-                                len(lines[idx]) <= 2 * pad + 6):
+                        elif (
+                            i > 2
+                            and j > 3
+                            and i % 2 != j % 2
+                            and len(lines[idx]) <= 2 * pad + 6
+                        ):
                             extra_pad += pad + 2
 
-                    if (i > 3 and j > (2**(i - 2) + 2**(i - 1) - 1) and
-                            i % 2 == j % 2):
+                    if (
+                        i > 3
+                        and j > (2 ** (i - 2) + 2 ** (i - 1) - 1)
+                        and i % 2 == j % 2
+                    ):
                         extra_pad += pad + 2
 
-                    lines[idx] += '\\'.rjust(num_spaces + extra_pad + 1)
+                    lines[idx] += "\\".rjust(num_spaces + extra_pad + 1)
                     num_spaces += 2
 
-                lines[(start + 2**i) - 1] += '_%s_' % ((matchup.winner or '')
-                                                        .ljust(pad, '_'))
-                for j in range(2**i, (2**(i + 1) - 1)):
+                lines[(start + 2**i) - 1] += "_%s_" % (
+                    (matchup.winner or "").ljust(pad, "_")
+                )
+                for j in range(2**i, (2 ** (i + 1) - 1)):
                     idx = start + j
                     num_spaces -= 2
 
                     extra_pad = 0
-                    if i > 1 and 2**i <= j < (2**i + 2**(i - 1) - 1):
+                    if i > 1 and 2**i <= j < (2**i + 2 ** (i - 1) - 1):
                         extra_pad = pad + 2
                         if i > 2 and j == 2**i:
                             extra_pad += pad + 2
-                    lines[idx] += '/'.rjust(num_spaces + extra_pad + 1)
+                    lines[idx] += "/".rjust(num_spaces + extra_pad + 1)
 
-                lines[start + (2 ** (i + 1) - 1)] += '/'
-                start += 2**(i + 2)
+                lines[start + (2 ** (i + 1) - 1)] += "/"
+                start += 2 ** (i + 2)
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
     def fill(self):
         for rnd in self:
@@ -204,13 +216,12 @@ class Bracket:
         if self._bracket is not None:
             return
 
-        self._bracket = [BracketRound(self, d)
-                         for d in range(self.rounds, -1, -1)]
+        self._bracket = [BracketRound(self, d) for d in range(self.rounds, -1, -1)]
 
         if randomize:
             random.shuffle(self.contenders)
-            first_half = self.contenders[:2 ** (self.rounds - 1)]
-            second_half = self.contenders[2 ** (self.rounds - 1):]
+            first_half = self.contenders[: 2 ** (self.rounds - 1)]
+            second_half = self.contenders[2 ** (self.rounds - 1) :]
         else:
             first_half = self.contenders[::2]
             second_half = self.contenders[1::2]
@@ -224,7 +235,7 @@ class Bracket:
                 self._bracket[i].add_match(Matchup())
 
         for matchup in first_round:
-            if matchup[1] == 'BYE':
+            if matchup[1] == "BYE":
                 matchup.declare_winner()
 
         self.update()
@@ -242,10 +253,11 @@ class BracketRound:
     """
     A single round is a collection of matchups, a column in the bracket.
     """
-    def __init__(self, bracket: Bracket, distance_from_championship: int=0):
+
+    def __init__(self, bracket: Bracket, distance_from_championship: int = 0):
         self.bracket = bracket
         self.distance_from_championship = int(distance_from_championship)
-        self.max_matchups = (2 ** self.distance_from_championship) / 2
+        self.max_matchups = (2**self.distance_from_championship) / 2
         self._matchups = list()
 
     def __getitem__(self, value: int):
@@ -261,19 +273,18 @@ class BracketRound:
         if len(self._matchups) <= self.max_matchups:
             self._matchups.append(matchup)
         else:
-            raise ValueError("This round is full. No more matchups "
-                             "can be added.")
+            raise ValueError("This round is full. No more matchups " "can be added.")
 
     def __repr__(self):
         titles = {
-            0: 'Champion',
-            1: 'Finals',
-            2: 'Semifinals',
-            3: 'Quarterfinals',
+            0: "Champion",
+            1: "Finals",
+            2: "Semifinals",
+            3: "Quarterfinals",
         }
 
         dist = self.distance_from_championship
         try:
             return titles[dist]
         except KeyError:
-            return 'Round %i' % (self.bracket.rounds - dist + 1)
+            return "Round %i" % (self.bracket.rounds - dist + 1)

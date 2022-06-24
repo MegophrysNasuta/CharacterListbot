@@ -6,8 +6,8 @@ from urllib.parse import urlparse
 
 class DBContextManager:
     def __enter__(self):
-        if 'DATABASE_URL' in env:
-            url = urlparse(env['DATABASE_URL'])
+        if "DATABASE_URL" in env:
+            url = urlparse(env["DATABASE_URL"])
             self.conn = psycopg2.connect(
                 dbname=url.path[1:],
                 user=url.username,
@@ -16,7 +16,7 @@ class DBContextManager:
                 port=url.port,
             )
         else:
-            self.conn = sqlite3.connect('toons.db')
+            self.conn = sqlite3.connect("toons.db")
 
         return self.conn
 

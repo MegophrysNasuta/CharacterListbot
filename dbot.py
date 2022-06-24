@@ -659,7 +659,8 @@ async def on_message(message):
         )
         total = 0
         for city in sorted(toons):
-            msg.append("%s (%s)" % (city.title(), len(toons[city])))
+            if city:
+                msg.append("%s (%s)" % (city.title(), len(toons[city])))
             if not content.startswith("!who matters") or city not in ERP_CITIES:
                 msg.append(", ".join(toons[city]))
             msg.append("")

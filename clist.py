@@ -228,7 +228,7 @@ def get_or_create_deathsight(db_connection, killer, corpse, external_id,
         return False
 
 
-def get_or_create_toon(db_connection, name):
+def get_or_create_toon(db_connection, name, api_url=None):
     cursor = db_connection.cursor()
     sql = fmt_sql(("SELECT c.city, c.level FROM characters c "
                    "WHERE c.name = %s ORDER BY c.id DESC;"), 1)
@@ -238,7 +238,7 @@ def get_or_create_toon(db_connection, name):
         row = cursor.fetchall()[0]
         data = {'city': row[0], 'level': row[1]}
     except IndexError:
-        data = get_toon_from_api(name)
+        data = get_toon_from_api(name, api_url=api_url)
         cursor.execute(fmt_sql("INSERT INTO characters (%s) VALUES (%s)" % (
                                ', '.join(API_FIELDS),
                                ', '.join('%s' for field in API_FIELDS)),
@@ -498,9 +498,9 @@ def show_toon_archive():
         return cursor.fetchall()
 
 
-def update_toon(db_connection, name):
+def update_toon(db_connection, name, api_url=None):
     cursor = db_connection.cursor()
-    data = get_toon_from_api(name)
+    data = get_toon_from_api(name, api_url=api_url)
     args = [name] + [data[field] for field in API_FIELDS]
     sql = "UPDATE characters SET %s WHERE name = %%s" % (
               ', '.join(("%s=%%s" % field

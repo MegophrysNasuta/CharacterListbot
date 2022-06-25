@@ -467,9 +467,9 @@ async def on_message(message):
                     msg.append(
                         "Level {level} {cls} in House {house} in {city}.".format(
                             level=data.pop("level", ""),
-                            cls=data.pop("class", "Aetolian").title(),
-                            house=data.pop("house", "GoodQuestion").title(),
-                            city=data.pop("city", "WhoKnows").title(),
+                            cls=data.pop("class", "").title() or "Aetolian",
+                            house=data.pop("house", "").title() or "Aetoliadoesnthavehouses",
+                            city=data.pop("city", "").title() or "some city in Aetolia",
                         )
                     )
                     msg.append(

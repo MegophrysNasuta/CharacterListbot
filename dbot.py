@@ -483,8 +483,8 @@ async def on_message(message):
                     msg.append(
                         "{name} is Explorer Rank {e:,d} and XP Rank {x:,d}.".format(
                             name=name.title(),
-                            e=int(data.pop("explorer_rank", "")),
-                            x=int(data.pop("xp_rank", "")),
+                            e=int(data.pop("explorer_rank", "0")),
+                            x=int(data.pop("xp_rank", "0")),
                         )
                     )
     elif POLL_REGEX.match(content):

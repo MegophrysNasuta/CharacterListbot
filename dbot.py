@@ -452,15 +452,16 @@ async def on_message(message):
                     "https://ask2.extension.org/file.php?key=a2oszltmvb6ti1a1tvqbxace8eadb9bs&expires=1610755200&signature=49316c42c6706af7475564e4129b6266e30ebaff"
                 )
             else:
+                data = None
                 try:
                     data = search_toon_archive(name)
                 except CharacterNotFound:
                     try:
                         api_url = API_URL.replace("achaea", "aetolia")
                         data = search_toon_archive(name, api_url=api_url)
-                    except Exception as e:
+                    except CharacterNotFound:
                         msg.append('"%s" is not real. You made that up.' % name.title())
-                else:
+                if data is not None:
                     fullname = data.pop("fullname")
                     msg.extend([fullname, "=" * len(fullname)])
                     msg.append(

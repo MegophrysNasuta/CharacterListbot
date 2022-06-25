@@ -477,8 +477,8 @@ async def on_message(message):
                             "{name} has killed {d} denizens and " "{a} adventurers."
                         ).format(
                             name=name.title(),
-                            d=expand_kills(data.pop("mob_kills", "")),
-                            a=expand_kills(data.pop("player_kills", "")),
+                            d=expand_kills(data.pop("mob_kills", "0")),
+                            a=expand_kills(data.pop("player_kills", "0")),
                         )
                     )
                     msg.append(

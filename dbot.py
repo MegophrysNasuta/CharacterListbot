@@ -462,6 +462,7 @@ async def on_message(message):
                     except CharacterNotFound:
                         msg.append('"%s" is not real. You made that up.' % name.title())
                 if data is not None:
+                    not_numbers = re.compile("[^\d]+")
                     fullname = data.pop("fullname")
                     msg.extend([fullname, "=" * len(fullname)])
                     msg.append(
@@ -484,8 +485,8 @@ async def on_message(message):
                     msg.append(
                         "{name} is Explorer Rank {e:,d} and XP Rank {x:,d}.".format(
                             name=name.title(),
-                            e=int(data.pop("explorer_rank", data.pop("explore rank", "").replace("th", "").replace("st", "").replace("nd", "").replace("rd", ""))),
-                            x=int(data.pop("xp_rank", data.pop("xp rank", "").replace("th", "").replace("st", "").replace("nd", "").replace("rd", ""))),
+                            e=int(not_numbers.sub("", data.pop("explorer_rank", data.pop("explore rank", "")))),
+                            x=int(not_numbers.sub("", data.pop("xp_rank", data.pop("xp rank", "")))),
                         )
                     )
     elif POLL_REGEX.match(content):

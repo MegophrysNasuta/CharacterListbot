@@ -553,10 +553,10 @@ def show_kdr(player, against=None):
         return kills, deaths
 
 
-def search_toon_archive(name):
+def search_toon_archive(name, api_url=None):
     with DBContextManager() as conn:
         setup_db_if_blank(conn)
-        return get_or_create_toon(conn, name)
+        return get_or_create_toon(conn, name, api_url=api_url)
 
 
 def show_toon_archive():

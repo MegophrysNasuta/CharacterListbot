@@ -465,10 +465,10 @@ async def on_message(message):
                     msg.extend([fullname, "=" * len(fullname)])
                     msg.append(
                         "Level {level} {cls} in House {house} in {city}.".format(
-                            level=data.pop("level"),
-                            cls=data.pop("class").title(),
-                            house=data.pop("house").title(),
-                            city=data.pop("city").title(),
+                            level=data.pop("level", ""),
+                            cls=data.pop("class", "").title(),
+                            house=data.pop("house", "").title(),
+                            city=data.pop("city", "").title(),
                         )
                     )
                     msg.append(
@@ -476,15 +476,15 @@ async def on_message(message):
                             "{name} has killed {d} denizens and " "{a} adventurers."
                         ).format(
                             name=name.title(),
-                            d=expand_kills(data.pop("mob_kills")),
-                            a=expand_kills(data.pop("player_kills")),
+                            d=expand_kills(data.pop("mob_kills", "")),
+                            a=expand_kills(data.pop("player_kills", "")),
                         )
                     )
                     msg.append(
                         "{name} is Explorer Rank {e:,d} and XP Rank {x:,d}.".format(
                             name=name.title(),
-                            e=int(data.pop("explorer_rank")),
-                            x=int(data.pop("xp_rank")),
+                            e=int(data.pop("explorer_rank", "")),
+                            x=int(data.pop("xp_rank", "")),
                         )
                     )
     elif POLL_REGEX.match(content):

@@ -458,7 +458,7 @@ async def on_message(message):
                     try:
                         api_url = API_URL.replace("achaea", "aetolia")
                         data = search_toon_archive(name, api_url=api_url)
-                    except CharacterNotFound:
+                    except Exception as e:
                         msg.append('"%s" is not real. You made that up.' % name.title())
                 else:
                     fullname = data.pop("fullname")

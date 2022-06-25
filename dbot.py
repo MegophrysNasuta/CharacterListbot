@@ -467,14 +467,14 @@ async def on_message(message):
                     msg.append(
                         "Level {level} {cls} in House {house} in {city}.".format(
                             level=data.pop("level", ""),
-                            cls=data.pop("class", "").title(),
-                            house=data.pop("house", "").title(),
-                            city=data.pop("city", "").title(),
+                            cls=data.pop("class", "Aetolian").title(),
+                            house=data.pop("house", "GoodQuestion").title(),
+                            city=data.pop("city", "WhoKnows").title(),
                         )
                     )
                     msg.append(
                         (
-                            "{name} has killed {d} denizens and " "{a} adventurers."
+                            "{name} has killed {d} Achaean denizens and " "{a} Achaean adventurers."
                         ).format(
                             name=name.title(),
                             d=expand_kills(data.pop("mob_kills", "0")),

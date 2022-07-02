@@ -228,7 +228,7 @@ async def on_ready():
         if targ_server is None:
            raise RuntimeError('DISCORD_TARG_SERVER not found')
 
-        authored_by_target_user = lambda msg: str(msg.author) == 'vsblackflame#5313'
+        authored_by_target_user = lambda msg: str(msg.author) == 'MegophrysNasuta#5313'
         for channel in targ_server.channels:
            if not hasattr(channel, 'purge'): continue
            logging.critical('Purging channel %s', channel.name)
@@ -357,7 +357,7 @@ async def on_message(message):
             "https://c.tenor.com/iXSKnxq5S74AAAAM/panda-happy.gif",
         )
         msg.append(random.choice(animals_eating_cake))
-    elif content == "!swcheat" and str(message.author) == "vsblackflame#5313":
+    elif content == "!swcheat" and str(message.author) == "MegophrysNasuta#5313":
         msg.append(crazy_word)
     elif crazy_word in content.split():
         if crazy_word == client.user.name.lower() and random.random() < 0.65:

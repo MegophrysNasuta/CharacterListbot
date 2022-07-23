@@ -464,6 +464,8 @@ async def on_message(message):
                 if data is not None:
                     not_numbers = re.compile("[^\d]+")
                     fullname = data.pop("fullname")
+                    if name == "Astarod":
+                        fullname = "That's Mister Astarod Blackstone, You Whipper-Snapper!"
                     msg.extend([fullname, "=" * len(fullname)])
                     msg.append(
                         "Level {level} {cls} in House {house} in {city}.".format(

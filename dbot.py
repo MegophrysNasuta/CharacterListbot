@@ -98,7 +98,7 @@ def secret_word():
 
 
 CITY_WHO_REGEX = re.compile(
-    "\!(?P<city>mhaldor|hashan|ashtan|eleusis|targossas|cyrene|rogues|intents)"
+    "\!(?P<city>mhaldor|hashan|ashtan|eleusis|targossas|cyrene|rogues|mhaldussy|hashussy|ashtussy|eleussy|targussy|cyrussy|nonussy)"
 )
 DICE_ROLLING_REGEX = re.compile("\!roll (?P<number>\d*)d(?P<die_type>\d+)")
 SET_POLLOPT_REGEX = re.compile("\!setpollopt (?P<pollopt_id>\d+) (?P<meaning>.*)")

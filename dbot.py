@@ -620,7 +620,10 @@ async def on_message(message):
     elif CITY_WHO_REGEX.match(content):
         toons = list_toons()
         city = CITY_WHO_REGEX.match(content)["city"]
-        translations = {"rogues": "(none)", "intents": "Tent City"}
+        translations = {"rogues": "(none)", "nonussy": "(none)",
+                        "mhaldussy": "mhaldor", "ashtussy": "ashtan",
+                        "cyrussy": "cyrene", "hashussy": "hashan",
+                        "eleussy": "eleusis", "targussy": "targossas"}
         translate_city = lambda c: translations.get(c, c)
         if translate_city(city) in toons:
             if city == "rogues":

@@ -335,7 +335,7 @@ def list_toons(update=False, quick=False, min_level=1, positive_kdr=None, api_ur
 
     toon_list = {}
     data = requests.get("%s.json" % api_url).json()
-    toons = data["characters"]
+    toons = [toon for toon in data["characters"] if toon["name"] != "Fejervarya"]
     if quick:
         return [toon["name"] for toon in toons]
 

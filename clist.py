@@ -14,7 +14,7 @@ import requests
 from db import DBContextManager
 
 
-API_URL = "http://api.achaea.com/characters"
+API_URL = "https://api.achaea.com/characters"
 
 API_FIELDS = (
     "name",
